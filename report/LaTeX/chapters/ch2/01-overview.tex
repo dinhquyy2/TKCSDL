@@ -1,0 +1,81 @@
+\section{Tổng quan}
+\subsection{Phạm vi và Ước lượng}
+Dự án được chia nhỏ theo cấu trúc phân rã công việc (WBS), ước lượng nỗ lực theo ngày công (man-day) cho từng hạng mục, giới hạn trong phạm vi \textbf{Thiết kế hệ thống + Cơ sở dữ liệu} đã nêu ở mục~\ref{sec:scope-limitations}.
+
+\begin{table}[htbp]
+    \centering
+    \small
+    \caption{Bảng phân rã công việc và ước lượng nỗ lực}
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{|p{1cm}|p{7cm}|p{2.3cm}|p{2cm}|}
+        \hline
+        \textbf{\#} & \textbf{Hạng mục (WBS)} & \textbf{Độ phức tạp} & \textbf{Ước lượng (ngày công)} \\
+        \hline
+        1 & Khởi tạo (đọc đề cương, xác định phạm vi thu hẹp) & Đơn giản & 3 \\
+        \hline
+        2 & Soạn thảo SRS (yêu cầu chức năng \& phi chức năng) & Trung bình & 6 \\
+        \hline
+        3.1 & Thiết kế ERD (Entity Relationship Diagram) & Phức tạp & 5 \\
+        \hline
+        3.2 & Viết script DDL PostgreSQL (bảng, khóa, ràng buộc) & Phức tạp & 5 \\
+        \hline
+        3.3 & Thiết kế trigger/rule chặn UPDATE/DELETE trên Ledger & Trung bình & 3 \\
+        \hline
+        3.4 & Thiết kế index tối ưu đa khách thuê & Đơn giản & 2 \\
+        \hline
+        3.5 & Thiết kế kiến trúc tổng thể (Architecture Diagram) & Trung bình & 3 \\
+        \hline
+        3.6 & Vẽ Use Case Diagram \& UML Class Diagram & Trung bình & 4 \\
+        \hline
+        3.7 & Vẽ Sequence Diagram (6 luồng nghiệp vụ trọng yếu) & Phức tạp & 6 \\
+        \hline
+        3.8 & Đặc tả API (Swagger/Postman) & Trung bình & 4 \\
+        \hline
+        4.1 & Cài đặt PostgreSQL (Docker), chạy schema thật & Đơn giản & 2 \\
+        \hline
+        4.2 & Viết seed data (tenant, user, sản phẩm, tồn kho, đơn hàng mẫu) & Trung bình & 4 \\
+        \hline
+        4.3 & Viết script kiểm tra toàn vẹn dữ liệu & Trung bình & 3 \\
+        \hline
+        5.1 & RTM đầy đủ \& Data Dictionary & Trung bình & 4 \\
+        \hline
+        5.2 & Test Plan / Test Case (thiết kế, không chạy) & Trung bình & 3 \\
+        \hline
+        5.3 & Quản lý GitLab (repo, Issues, Milestones) & Đơn giản & 2 \\
+        \hline
+        5.4 & Tổng hợp báo cáo, README, chuẩn bị bảo vệ & Trung bình & 5 \\
+        \hline
+        \multicolumn{3}{|r|}{\textbf{Tổng nỗ lực ước tính (ngày công)}} & \textbf{64} \\
+        \hline
+    \end{tabular}
+    }
+\end{table}
+
+\subsection{Mục tiêu dự án}
+\begin{itemize}
+    \item \textbf{Thời hạn:} Hoàn thành trong 5 tuần, trước thời điểm báo cáo tiến độ cuối kỳ với GVHD.
+    \item \textbf{Nỗ lực phân bổ (man-day):} Khoảng 64 ngày công cho 4 thành viên (trung bình 16 ngày công/người).
+    \item \textbf{Tiêu chí hoàn thành:} Toàn bộ 14 hạng mục tài liệu/mã nguồn liệt kê ở mục~\ref{sec:deliverables-list} được bàn giao đầy đủ, có thể chạy được (đối với phần Database) hoặc thẩm định được (đối với phần thiết kế).
+\end{itemize}
+
+\subsection{Rủi ro dự án}
+\begin{table}[htbp]
+    \centering
+    \small
+    \caption{Danh sách rủi ro và phương án xử lý}
+    \begin{tabular}{|p{0.5cm}|p{3.4cm}|p{3cm}|p{1.3cm}|p{3.4cm}|}
+        \hline
+        \textbf{\#} & \textbf{Mô tả rủi ro} & \textbf{Ảnh hưởng} & \textbf{Khả năng} & \textbf{Phương án xử lý} \\
+        \hline
+        1 & Thiết kế ERD sai ngay từ đầu, phát hiện muộn khi đã viết DDL & Phải làm lại schema và seed data, trễ tiến độ & Trung bình & TV1 hoàn thành ERD trước, review chéo với TV3 (Class Diagram) trước khi viết DDL \\
+        \hline
+        2 & Cơ chế Anti-Oversell (locking) thiết kế sai logic, không chống được race-condition & Sai lệch mục tiêu kỹ thuật cốt lõi của đề tài & Trung bình & Thiết kế Sequence Diagram chi tiết, review kỹ trước khi đưa vào SRS chính thức \\
+        \hline
+        3 & Thành viên vô tình mở rộng phạm vi sang code Backend/Frontend & Lãng phí thời gian ngoài phạm vi bàn giao đã thống nhất & Thấp & Nhắc lại phạm vi (mục~\ref{sec:scope-limitations}) đầu mỗi buổi họp nhóm \\
+        \hline
+        4 & Trigger chặn UPDATE/DELETE trên Ledger viết sai, không raise lỗi đúng cách & Không đáp ứng NFR-SEC-03, ảnh hưởng điểm thiết kế & Thấp & Viết kèm script test tự kiểm chứng (thử UPDATE/DELETE, xác nhận bị chặn) \\
+        \hline
+        5 & Tài liệu SRS/RTM không đồng bộ khi có thay đổi thiết kế giữa chừng & Tài liệu bàn giao không nhất quán & Trung bình & TV4 (QA lead) rà soát chéo cuối mỗi tuần, cập nhật RTM song song với thiết kế \\
+        \hline
+    \end{tabular}
+\end{table}

@@ -1,0 +1,39 @@
+\section{Product Overview}
+
+Omnichannel Inventory and Sales Management System (OISM) là một nền tảng SaaS đa khách thuê (multi-tenant), thay thế các quy trình quản lý tồn kho rời rạc hiện tại của doanh nghiệp bán lẻ đa kênh. Hệ thống bao gồm quản lý sản phẩm/biến thể, sổ cái tồn kho append-only, tính giá vốn bình quân gia quyền tự động, trung tâm tiếp nhận đơn hàng đa kênh, cơ chế chống bán vượt tồn, bán hàng tại quầy (POS) và báo cáo doanh thu/lợi nhuận.
+
+Hệ thống được thiết kế theo Clean Architecture, gồm ba thành phần chính: Backend API (.NET~8) xử lý toàn bộ nghiệp vụ và dữ liệu, Admin Dashboard (ReactJS) dành cho Owner/Staff quản trị, và POS Application (ReactJS PWA) dành cho Cashier bán hàng tại quầy. Ba thành phần giao tiếp qua REST API và kênh real-time (SignalR).
+
+Sơ đồ kiến trúc dưới đây minh họa các lớp và thành phần của hệ thống cho phiên bản thiết kế 1.0. Hệ thống dự kiến mở rộng ở các học kỳ sau, bổ sung tích hợp AI dự báo nhập hàng và kết nối API thật của các sàn TMĐT.
+
+\begin{figure}[H]
+    \centering
+    \fbox{\parbox{0.82\textwidth}{\centering\vspace{3cm}\textit{[Chèn hình tại đây]}\vspace{3cm}}}
+    \caption{Sơ đồ kiến trúc tổng thể hệ thống (Architecture / System Context Diagram)}
+    \label{fig:architecture-diagram}
+\end{figure}
+\begin{imgnote}
+📌 Hình 1 — Cần bổ sung hình: \texttt{Hinh\_01\_KienTrucTongThe.png} — Sơ đồ kiến trúc tổng thể, 4 lớp Clean Architecture (Domain/Application/Infrastructure/Presentation) và luồng giao tiếp giữa Backend API, Admin Dashboard, POS App. Thay khối khung nét đứt phía trên bằng \texttt{\textbackslash includegraphics} khi có file hình.
+\end{imgnote}
+
+\subsection{Mô tả luồng dữ liệu và ràng buộc nghiệp vụ}
+
+Hệ thống hoạt động theo mô hình sổ cái là nguồn sự thật duy nhất (ledger as single source of truth): mọi thay đổi tồn kho — dù đến từ nhập hàng, bán hàng, chuyển kho hay kiểm kho — đều được ghi thành một dòng mới trong bảng InventoryTransaction trước khi số dư tồn kho hiển thị (StockBalance) được cập nhật. Cách tiếp cận này giúp đảm bảo khả năng truy vết và kiểm toán tuyệt đối, khác biệt với cách các hệ thống bán lẻ truyền thống chỉ lưu số dư cuối cùng.
+
+\begin{longtable}{|p{2.8cm}|p{3.2cm}|p{7.2cm}|}
+    \hline
+    \textbf{Mô đun} & \textbf{Vai trò} & \textbf{Mô tả trách nhiệm} \\ \hline
+    \endfirsthead
+    \hline
+    \textbf{Mô đun} & \textbf{Vai trò} & \textbf{Mô tả trách nhiệm} \\ \hline
+    \endhead
+    Admin Dashboard & Owner/Staff & Quản lý sản phẩm, chi nhánh, xem sổ cái tồn kho, xử lý đơn hàng, xem báo cáo lợi nhuận \\ \hline
+    POS Application & Cashier & Bán hàng nhanh tại quầy, quét barcode, thanh toán, in hóa đơn \\ \hline
+    Backend API (Domain/Application) & Logic nghiệp vụ & Xử lý reserve/confirm/deduct, tính giá vốn bình quân, state machine đơn hàng \\ \hline
+    Inventory Ledger Engine & Sổ cái & Ghi nhận append-only mọi biến động tồn kho, tuyệt đối không cho sửa/xóa \\ \hline
+    Anti-Oversell Engine & Chống bán vượt tồn & Khóa hàng (locking), tính available theo thời gian thực \\ \hline
+    Webhook Simulator & Tích hợp & Mô phỏng đơn hàng từ Shopee/TikTok Shop/Lazada \\ \hline
+    Reporting Service & Báo cáo & Tổng hợp doanh thu, giá vốn, lợi nhuận gộp, cảnh báo tồn thấp \\ \hline
+    \caption{Bảng phân tích thành phần hệ thống theo mô đun chức năng}
+\end{longtable}
+\FloatBarrier

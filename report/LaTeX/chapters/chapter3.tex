@@ -1,0 +1,111 @@
+\chapter{Software Requirement Specification}
+\label{ch:3}
+
+\noindent\textbf{Mục tiêu của Chương 3:} Chương này trình bày đặc tả yêu cầu phần mềm của Hệ thống quản lý bán hàng và tồn kho đa kênh (OISM) dưới góc nhìn người dùng, chức năng, dữ liệu, giao diện và yêu cầu phi chức năng. Đây là chương trọng tâm của đồ án, vì phạm vi bàn giao thực tế của nhóm (mục~\ref{sec:scope-limitations}) tập trung vào thiết kế — nội dung chương này chính là sản phẩm chi tiết nhất mà nhóm hoàn thành.
+
+\section{Phạm vi của hệ thống}
+
+Hệ thống được thiết kế để phục vụ doanh nghiệp bán lẻ vận hành đồng thời nhiều kênh bán (cửa hàng vật lý và các sàn TMĐT), với ba vấn đề nghiệp vụ cốt lõi cần giải quyết: chống bán vượt tồn kho (oversell), tính giá vốn bình quân gia quyền chính xác, và đảm bảo khả năng truy vết/kiểm toán tuyệt đối của mọi biến động tồn kho thông qua cơ chế sổ cái append-only.
+
+Trong phiên bản thiết kế đầu tiên (phạm vi đồ án), hệ thống tập trung đặc tả đầy đủ 9 nhóm chức năng cốt lõi: Xác thực đa khách thuê, Quản lý sản phẩm/biến thể, Sổ cái \& quản lý tồn kho, Tính giá vốn bình quân, Trung tâm đơn hàng tập trung, Cơ chế chống bán vượt tồn, Bán hàng tại quầy (POS), Báo cáo \& cảnh báo, và Webhook Simulator \& xử lý thời gian thực. Các tính năng nâng cao như tích hợp AI dự báo nhập hàng và định vị nâng cao được ghi nhận trong thiết kế nhưng dời sang giai đoạn phát triển tiếp theo.
+
+\input{chapters/ch3/01-product-overview.tex}
+\input{chapters/ch3/02-user-requirements.tex}
+\input{chapters/ch3/03-functional-requirements.tex}
+\input{chapters/ch3/04-non-functional-requirements.tex}
+\input{chapters/ch3/05-requirement-appendix.tex}
+
+\subsection{Bảng tóm tắt yêu cầu theo nhóm chức năng}
+
+\begin{longtable}{|p{2.6cm}|p{2.6cm}|p{2.2cm}|p{5.0cm}|}
+\hline
+\textbf{Nhóm chức năng} & \textbf{Vai trò chính} & \textbf{Ưu tiên} & \textbf{Mô tả giá trị} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Nhóm chức năng} & \textbf{Vai trò chính} & \textbf{Ưu tiên} & \textbf{Mô tả giá trị} \\
+\hline
+\endhead
+FR-AUTH: Xác thực \& đa khách thuê & Owner & Cao & Cô lập dữ liệu tuyệt đối giữa các Tenant, phân quyền theo vai trò \\
+\hline
+FR-PROD: Quản lý sản phẩm/biến thể & Owner & Cao & Chuẩn hóa danh mục, SKU, barcode, giá bán \\
+\hline
+FR-INV: Sổ cái \& tồn kho & Staff & Rất cao & Ghi nhận mọi biến động tồn kho, không thể sửa/xóa \\
+\hline
+FR-COST: Giá vốn bình quân & Hệ thống (tự động) & Rất cao & Tính đúng lợi nhuận gộp theo thời gian thực \\
+\hline
+FR-ORD: Trung tâm đơn hàng & Staff & Rất cao & Chuẩn hóa đơn từ mọi kênh, vòng đời rõ ràng \\
+\hline
+FR-RSE: Chống bán vượt tồn & Hệ thống (tự động) & Rất cao & Loại bỏ hoàn toàn tình trạng oversell \\
+\hline
+FR-POS: Bán hàng tại quầy & Cashier & Cao & Thanh toán nhanh, an toàn, atomic \\
+\hline
+FR-REP: Báo cáo \& cảnh báo & Owner & Cao & Ra quyết định kinh doanh dựa trên số liệu chính xác \\
+\hline
+FR-SIM: Webhook \& real-time & Hệ thống (tự động) & Trung bình & Mô phỏng đa kênh, thông báo tức thời \\
+\hline
+\caption{Bảng tóm tắt yêu cầu theo chức năng chính}
+\end{longtable}
+
+\subsection{Kết luận đặc tả yêu cầu}
+
+Các yêu cầu trong Chương 3 tập trung mô tả đầy đủ bối cảnh sử dụng, người dùng, chức năng, dữ liệu, giao diện và các ràng buộc kỹ thuật của OISM. Điều này cho phép các bên liên quan thống nhất quan điểm về sản phẩm, đồng thời tạo nền tảng vững chắc để triển khai cơ sở dữ liệu (Chương 4) theo hướng có kiểm soát, có thể kiểm chứng và dễ mở rộng trong tương lai.
+
+\paragraph*{Quy tắc xác thực}\
+Mỗi vai trò (Owner/Staff/Cashier) tương ứng với một nhóm quyền truy cập riêng, thực thi qua JWT chứa TenantId/UserId/Role và middleware RBAC. Điều này giảm rủi ro truy cập trái phép và đảm bảo ranh giới trách nhiệm rõ ràng giữa các vai trò.
+
+\paragraph*{Quy tắc dữ liệu}\
+Mọi biến động tồn kho phải được ghi vào sổ cái InventoryTransaction dạng append-only, có TenantId, BranchId, SKUId, loại giao dịch, số lượng, số dư sau giao dịch và thời điểm tạo — không được sửa hoặc xóa sau khi ghi.
+
+\paragraph*{Quy tắc tích hợp}\
+Hệ thống cần khả năng tiếp nhận đơn hàng từ nhiều kênh (POS, Admin, Webhook Simulator) thông qua một mô hình đơn hàng chuẩn hóa duy nhất (Canonical Order Model), với xác thực và xử lý lỗi rõ ràng ở mọi endpoint.
+
+\paragraph*{Quy tắc hoạt động}\
+Hệ thống phải hoạt động ổn định ngay cả khi nhiều đơn hàng tranh chấp đồng thời trên cùng một SKU (kịch bản flash sale). Mọi logic giữ chỗ/trừ tồn phải có kiểm tra ràng buộc chặt chẽ ở tầng cơ sở dữ liệu (locking), không chỉ ở tầng ứng dụng.
+
+\paragraph*{Đánh giá mức độ hoàn thiện}\
+Khi yêu cầu ở Chương 3 được xác nhận, nhóm có đủ cơ sở để triển khai thiết kế dữ liệu chi tiết và cơ sở dữ liệu vật lý ở Chương 4. Các thành phần về nghiệp vụ, phân quyền và ràng buộc dữ liệu đã được nêu rõ để hỗ trợ việc viết script DDL và seed data có hướng dẫn cụ thể.
+
+\section{Tổng hợp yêu cầu chức năng và phi chức năng}
+
+Bảng dưới đây tổng hợp các nhóm yêu cầu chính để phục vụ quản lý dự án và triển khai cơ sở dữ liệu theo từng giai đoạn.
+
+\begin{longtable}{|p{2.6cm}|p{2.2cm}|p{3cm}|p{4.6cm}|}
+\hline
+\textbf{Nhóm yêu cầu} & \textbf{Mức ưu tiên} & \textbf{Đơn vị phụ trách} & \textbf{Kết quả mong đợi} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Nhóm yêu cầu} & \textbf{Mức ưu tiên} & \textbf{Đơn vị phụ trách} & \textbf{Kết quả mong đợi} \\
+\hline
+\endhead
+Sổ cái tồn kho (Ledger) & Rất cao & TV1 (Data Architect) & Bảng append-only, có trigger chặn UPDATE/DELETE \\
+\hline
+Cơ chế chống bán vượt tồn & Rất cao & TV1, TV3 & Thiết kế locking đúng, không có available âm \\
+\hline
+Tính giá vốn bình quân & Rất cao & TV1, TV2 & Công thức đúng, kiểm chứng bằng seed data mẫu \\
+\hline
+Đa khách thuê (Multi-tenant) & Cao & TV1 & Mọi bảng có TenantId, cô lập dữ liệu \\
+\hline
+Đặc tả API & Cao & TV3 & Swagger/Postman đầy đủ endpoint \\
+\hline
+Báo cáo \& cảnh báo & Trung bình & TV1, TV2 & Schema hỗ trợ truy vấn báo cáo hiệu quả \\
+\hline
+\caption{Bảng tổng hợp yêu cầu chức năng và phi chức năng theo ưu tiên}
+\end{longtable}
+
+\section{Mức độ sẵn sàng cho giai đoạn thiết kế cơ sở dữ liệu}
+
+Một đặc tả yêu cầu tốt phải cho phép chuyển tiếp sang thiết kế dữ liệu chi tiết mà không cần giải thích thêm nhiều. Đối với OISM, các yêu cầu cốt lõi đã được phân tách theo thực thể dữ liệu, quy trình nghiệp vụ, phân quyền và ràng buộc toàn vẹn — cho phép triển khai schema PostgreSQL với sự tách biệt rõ ràng giữa các nhóm bảng (Tenant/Auth, Catalog, Inventory Ledger, Order, Reporting).
+
+\begin{itemize}
+    \item Đảm bảo mọi bảng nghiệp vụ có TenantId và Global Query Filter tương ứng.
+    \item Đảm bảo sổ cái tồn kho append-only tuyệt đối, có cơ chế chặn ở tầng database.
+    \item Hỗ trợ khóa hàng (row-level locking) để chống race-condition trong kịch bản flash sale.
+    \item Tối ưu index cho truy vấn báo cáo ở quy mô hàng triệu dòng ledger.
+    \item Đảm bảo tính atomic cho chuỗi giao dịch Reserve → Confirm → Deduct.
+\end{itemize}
+
+\section{Nhận định cuối cùng}
+
+Chương 3 đã xác định rõ: hệ thống cần phục vụ nhiều vai trò, nhiều kênh bán và phải đảm bảo tính đúng đắn tuyệt đối của dữ liệu tồn kho trong điều kiện truy cập đồng thời cao. Dựa trên các yêu cầu này, cơ sở dữ liệu có thể được thiết kế theo hướng chặt chẽ, có thể kiểm chứng và sẵn sàng làm nền tảng cho việc lập trình Backend ở các học kỳ tiếp theo. Đây là phần nền tảng để triển khai và kiểm thử cơ sở dữ liệu ở Chương 4.

@@ -1,0 +1,11 @@
+\section{Bối cảnh và nền tảng đề tài}
+
+Trong bối cảnh bán lẻ hiện đại, doanh nghiệp ngày càng vận hành song song nhiều kênh bán hàng: cửa hàng vật lý (Point-of-Sale), và các sàn thương mại điện tử như Shopee, TikTok Shop, Lazada. Việc quản lý tồn kho và đơn hàng trên các kênh phân mảnh này đặt ra nhiều thách thức nghiêm trọng:
+
+\begin{itemize}
+    \item \textbf{Bán vượt tồn kho (oversell):} Khi tồn kho không được đồng bộ tức thời giữa các kênh, cùng một sản phẩm có thể được bán cho nhiều khách hàng khác nhau trên các kênh khác nhau vượt quá số lượng thực tế còn trong kho.
+    \item \textbf{Giá vốn hàng bán (COGS) không chính xác:} Khi nhập hàng nhiều đợt với đơn giá khác nhau, việc tính giá vốn thủ công hoặc tính sai dẫn đến báo cáo lợi nhuận sai lệch.
+    \item \textbf{Sai lệch dữ liệu tồn kho:} Cập nhật tồn kho thủ công qua nhiều đầu mối (nhân viên kho, nhân viên bán hàng, đối tác sàn TMĐT) dễ dẫn đến sai số cộng dồn theo thời gian, và không có khả năng truy vết lại lịch sử thay đổi khi cần kiểm toán.
+\end{itemize}
+
+Để giải quyết các vấn đề trên, doanh nghiệp bán lẻ cần một giải pháp phần mềm tích hợp, có khả năng xử lý đồng thời (concurrency) ở mức cao, đảm bảo tính toàn vẹn của sổ sách tồn kho theo thời gian thực, và hỗ trợ mô hình SaaS đa khách thuê (multi-tenant) để một nền tảng có thể phục vụ nhiều cửa hàng độc lập với dữ liệu cô lập tuyệt đối.

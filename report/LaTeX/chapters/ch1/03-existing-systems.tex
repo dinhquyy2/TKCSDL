@@ -1,0 +1,21 @@
+\section{Hệ thống hiện tại}
+
+\subsection{Phần mềm quản lý bán hàng đơn kênh truyền thống}
+\textbf{Mô tả:} Phần lớn cửa hàng nhỏ và vừa hiện dùng phần mềm quản lý bán hàng (ví dụ Sapo, KiotViet, hoặc Excel thủ công) chỉ tập trung vào một kênh bán chính, thường là cửa hàng vật lý hoặc một sàn TMĐT duy nhất.
+
+\textbf{Nhược điểm:}
+\begin{itemize}
+    \item Không đồng bộ tồn kho theo thời gian thực giữa nhiều kênh bán khác nhau, dẫn đến tình trạng oversell khi vận hành đa kênh.
+    \item Không có cơ chế sổ cái (ledger) ghi nhận từng biến động tồn kho — chỉ lưu số dư cuối cùng, mất khả năng truy vết và kiểm toán khi có sai lệch.
+    \item Tính giá vốn theo phương pháp đơn giản (giá nhập gần nhất hoặc giá cố định), không phản ánh đúng giá vốn bình quân khi nhập hàng nhiều đợt với giá khác nhau.
+\end{itemize}
+
+\subsection{Giải pháp ERP/Middleware kết nối đa kênh của bên thứ ba}
+\textbf{Mô tả:} Một số nền tảng middleware (ví dụ Sapo Omnichannel, Haravan) cho phép kết nối nhiều kênh bán vào một kho trung tâm.
+
+\textbf{Nhược điểm:}
+\begin{itemize}
+    \item Chi phí thuê bao cao, khó tùy biến sâu theo quy trình nghiệp vụ đặc thù của từng doanh nghiệp (ví dụ công thức tính giá vốn riêng, quy tắc giữ chỗ tồn kho riêng).
+    \item Cơ chế chống bán vượt tồn (nếu có) thường xử lý bất đồng bộ theo chu kỳ (polling), có độ trễ vài giây đến vài phút — không đủ chặt chẽ trong kịch bản flash sale với nhiều đơn hàng tranh chấp cùng lúc trên 1 sản phẩm còn ít tồn kho.
+    \item Không phải nền tảng mã nguồn mở/tự triển khai, nên doanh nghiệp không kiểm soát được hạ tầng dữ liệu và khó tích hợp sâu với hệ thống kế toán nội bộ.
+\end{itemize}

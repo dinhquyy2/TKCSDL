@@ -1,0 +1,27 @@
+\section{Môi trường và công nghệ sử dụng}
+
+\subsection{Công nghệ đã sử dụng trong phạm vi bàn giao (Thiết kế + Database)}
+\begin{itemize}
+    \item \textbf{Cơ sở dữ liệu:} PostgreSQL 15+, chạy qua Docker để đảm bảo tính nhất quán môi trường giữa các thành viên.
+    \item \textbf{Công cụ thiết kế dữ liệu:} dbdiagram.io (ERD), draw.io (Class Diagram, Sequence Diagram, State Diagram).
+    \item \textbf{Công cụ quản lý CSDL:} pgAdmin / DBeaver để chạy thử script DDL, seed data và script kiểm tra toàn vẹn.
+    \item \textbf{Đặc tả API:} Swagger Editor / Postman (dùng để đặc tả, không cần Backend thật để chạy).
+    \item \textbf{Quản lý mã nguồn:} GitLab (script SQL, tài liệu thiết kế).
+\end{itemize}
+
+\subsection{Công nghệ đã hoạch định cho hệ thống hoàn chỉnh (chưa triển khai trong học kỳ này)}
+Các công nghệ dưới đây đã được xác định trong thiết kế kiến trúc (Chương 3) làm cơ sở cho việc lập trình Backend/Frontend ở giai đoạn tiếp theo:
+\begin{itemize}
+    \item \textbf{Backend:} .NET~8 Web API, theo Clean Architecture (Domain/Application/Infrastructure/Presentation).
+    \item \textbf{Frontend:} ReactJS cho Admin Dashboard; ReactJS PWA cho POS Application.
+    \item \textbf{Giao tiếp real-time:} SignalR (WebSocket).
+    \item \textbf{Background Job:} Hangfire.
+    \item \textbf{Containerization \& CI/CD:} Docker, Docker Compose, GitHub Actions/GitLab CI.
+\end{itemize}
+
+\subsection{Môi trường phát triển}
+\begin{itemize}
+    \item \textbf{Hệ quản trị CSDL:} PostgreSQL container, mapping port 5432, volume lưu trữ dữ liệu bền vững giữa các lần chạy.
+    \item \textbf{Quản lý mã nguồn:} Git/GitLab, quy ước nhánh \texttt{main}, \texttt{feature/erd}, \texttt{feature/ddl-schema}, \texttt{feature/seed-data}.
+    \item \textbf{Môi trường:} Một môi trường \texttt{development} duy nhất trong phạm vi đồ án (chưa phân tách \texttt{staging}/\texttt{production} vì chưa triển khai thực tế).
+\end{itemize}

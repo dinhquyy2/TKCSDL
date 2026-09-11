@@ -1,0 +1,53 @@
+\section{Đánh giá kết quả đạt được}
+
+\subsection{Kết quả đạt được so với kế hoạch}
+Trong thời hạn 5 tuần, nhóm đã hoàn thành 14 hạng mục bàn giao đã liệt kê ở Chương~2, mục~\ref{sec:deliverables-list}:
+
+\begin{table}[htbp]
+    \centering
+    \small
+    \caption{Đối chiếu kế hoạch và kết quả thực hiện}
+    \begin{tabularx}{\textwidth}{|Y|p{2.2cm}|Y|}
+        \hline
+        \textbf{Hạng mục} & \textbf{Trạng thái} & \textbf{Ghi chú} \\
+        \hline
+        SRS đầy đủ (FR, NFR, RTM) & Hoàn thành & \\
+        \hline
+        Architecture Design Document & Hoàn thành & \\
+        \hline
+        ERD, UML Class Diagram, Use Case Diagram & \textit{(điền trạng thái)} & Cần chèn hình theo Phụ lục hình ảnh \\
+        \hline
+        Sequence Diagram (6 luồng nghiệp vụ) & \textit{(điền trạng thái)} & \\
+        \hline
+        Đặc tả API (Swagger/Postman) & \textit{(điền trạng thái)} & \\
+        \hline
+        Script DDL PostgreSQL & \textit{(điền trạng thái)} & \\
+        \hline
+        Trigger/rule append-only cho Ledger & \textit{(điền trạng thái)} & Đã kiểm chứng bằng script tự test (Chương 4) \\
+        \hline
+        Seed data \& script kiểm tra toàn vẹn & \textit{(điền trạng thái)} & \\
+        \hline
+        Backend API (.NET) & Chưa thực hiện & Ngoài phạm vi bàn giao học kỳ này, dời sang giai đoạn tiếp theo \\
+        \hline
+        Frontend (Admin Dashboard, POS PWA) & Chưa thực hiện & Ngoài phạm vi bàn giao học kỳ này \\
+        \hline
+    \end{tabularx}
+\end{table}
+
+\textit{Ghi chú: Cột "Trạng thái" để trống — nhóm điền "Hoàn thành"/"Đang thực hiện" theo tiến độ thực tế trước khi nộp báo cáo cuối kỳ.}
+
+\subsection{Đánh giá theo yêu cầu phi chức năng}
+Vì chưa có Backend thật, các chỉ tiêu phi chức năng về hiệu năng thời gian thực (API Response Time, khả năng chịu tải) chưa thể đo lường trực tiếp. Nhóm đã kiểm chứng được ở mức thiết kế/dữ liệu:
+\begin{itemize}
+    \item Ràng buộc append-only (NFR-SEC-03): đã kiểm chứng thành công qua trigger PostgreSQL.
+    \item Cô lập dữ liệu đa tenant (NFR-TENANT-01): đã kiểm chứng qua truy vấn chéo TenantId trên seed data.
+    \item Công thức giá vốn bình quân: đã kiểm chứng đúng với kịch bản nhập hàng nhiều đợt trong seed data.
+    \item Concurrency (NFR-PERF-02): mới mô phỏng bằng nhiều phiên SQL song song, \textbf{chưa đo lường được} ở quy mô 50 request đồng thời qua API thật — cần Backend hoàn chỉnh để kiểm thử đầy đủ.
+\end{itemize}
+
+\subsection{Bài học kinh nghiệm}
+\begin{itemize}
+    \item Việc hoàn thành ERD và Data Dictionary trước khi viết DDL giúp nhóm tránh phải làm lại schema nhiều lần.
+    \item Quyết định dùng TRIGGER thay vì RULE để chặn UPDATE/DELETE (Chương~4) giúp việc kiểm thử ràng buộc append-only rõ ràng và dễ chứng minh hơn với GVHD.
+    \item Thu hẹp phạm vi bàn giao ngay từ đầu (chỉ Thiết kế + Database) giúp nhóm tập trung làm sâu và đúng phần lõi khó nhất của đề tài (cơ chế chống bán vượt tồn, sổ cái append-only), thay vì dàn trải sang Backend/Frontend mà không đủ thời gian hoàn thiện.
+\end{itemize}

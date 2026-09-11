@@ -1,0 +1,22 @@
+\section{Triển khai hệ thống}
+
+\subsection{Phạm vi triển khai thực tế}
+Vì phạm vi bàn giao của học kỳ này giới hạn ở Thiết kế + Database (mục~\ref{sec:scope-limitations}), "triển khai" trong chương này chỉ đề cập đến việc đưa \textbf{cơ sở dữ liệu} chạy được trên máy cục bộ — chưa bao gồm triển khai Backend API hay Frontend lên môi trường thật.
+
+\subsection{Kiến trúc triển khai Database}
+\begin{itemize}
+    \item \textbf{Cơ sở dữ liệu:} PostgreSQL 15+ đóng gói qua Docker, đảm bảo mọi thành viên và GVHD có thể khởi tạo cùng một môi trường nhất quán chỉ với một lệnh \texttt{docker compose up}.
+    \item \textbf{Volume lưu trữ:} Named volume để dữ liệu không mất khi container được khởi động lại.
+    \item \textbf{Script khởi tạo:} \texttt{schema.sql} → \texttt{ledger\_constraints.sql} → \texttt{seed\_data.sql} chạy tuần tự để có một database sẵn sàng minh họa đầy đủ nghiệp vụ.
+\end{itemize}
+
+\subsection{Hướng dẫn cài đặt}
+Xem chi tiết đầy đủ tại tài liệu \texttt{installation\_guide.md} đính kèm gói bàn giao cuối kỳ — bao gồm các bước: cài Docker, clone GitLab repo, chạy \texttt{docker compose up -d}, và chạy tuần tự 3 script SQL nêu trên để có database mẫu hoàn chỉnh.
+
+\subsection{Kiến trúc triển khai đã hoạch định cho hệ thống hoàn chỉnh}
+Với hệ thống hoàn chỉnh (ngoài phạm vi bàn giao hiện tại), kiến trúc triển khai đã được hoạch định trong thiết kế (Chương~3) như sau, làm cơ sở cho giai đoạn phát triển tiếp theo:
+\begin{itemize}
+    \item Backend API đóng gói Docker image, triển khai qua CI/CD (GitHub Actions/GitLab CI).
+    \item Frontend (Admin Dashboard, POS PWA) triển khai qua CDN.
+    \item Cơ sở dữ liệu PostgreSQL managed service, tách biệt môi trường development/staging/production.
+\end{itemize}

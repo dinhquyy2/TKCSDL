@@ -1,0 +1,79 @@
+\subsection{Business Rules}
+
+\begin{longtable}{|p{1.6cm}|p{12cm}|}
+    \hline
+    \textbf{ID} & \textbf{Rule Definition} \\
+    \hline
+    \endfirsthead
+    \hline
+    \textbf{ID} & \textbf{Rule Definition} \\
+    \hline
+    \endhead
+    BR-01 & Bảng InventoryTransaction là append-only tuyệt đối — không có thao tác UPDATE/DELETE ở bất kỳ tầng nào, kể cả truy cập SQL trực tiếp. \\
+    \hline
+    BR-02 & available = on\_hand − reserved không được âm tại bất kỳ thời điểm nào. \\
+    \hline
+    BR-03 & SKUCode là duy nhất trong phạm vi một TenantId (unique composite key: TenantId + SKUCode). \\
+    \hline
+    BR-04 & OrderItem.CostPrice là snapshot bất biến sau khi đơn chuyển sang Confirmed, không cập nhật lại kể cả khi AvgCost của SKU thay đổi sau đó. \\
+    \hline
+    BR-05 & Mọi bảng nghiệp vụ phải có cột TenantId và áp dụng Global Query Filter để đảm bảo cô lập dữ liệu đa khách thuê. \\
+    \hline
+    BR-06 & Chuỗi giao dịch Reserve → Confirm → Deduct phải thực thi trong một transaction nguyên tử duy nhất, rollback toàn bộ nếu bất kỳ bước nào thất bại. \\
+    \hline
+    BR-07 & Mọi điều chỉnh sai sót tồn kho phải tạo dòng bù trừ mới (compensating transaction) vào Ledger, không được sửa dòng gốc. \\
+    \hline
+    BR-08 & Giờ rời bến/chuyển trạng thái đơn hàng không hợp lệ (VD: Completed → Reserved) phải bị từ chối ở tầng Domain. \\
+    \hline
+    BR-09 & Cơ chế chống bán vượt tồn bắt buộc dùng khóa cấp cơ sở dữ liệu (Pessimistic hoặc Optimistic Locking), không được xử lý chỉ ở tầng ứng dụng. \\
+    \hline
+    BR-10 & Chỉ Owner mới có quyền xem báo cáo doanh thu \& lợi nhuận gộp (dữ liệu tài chính nhạy cảm). \\
+    \hline
+    \caption{Danh sách quy tắc nghiệp vụ (Business Rules)}
+    \label{tab:business-rules}
+\end{longtable}
+
+\subsection{Common Requirements}
+\begin{itemize}
+    \item \textbf{Authentication and Authorization:} Áp dụng RBAC (Role-Based Access Control) để đảm bảo mỗi vai trò (Owner/Staff/Cashier) chỉ truy cập chức năng phù hợp.
+    \item \textbf{Data Integrity:} Mọi biến động tồn kho phải đi qua sổ cái append-only, đảm bảo có thể truy vết và kiểm toán 100\% lịch sử thay đổi.
+    \item \textbf{Multi-tenancy:} Hệ thống phải mở rộng được để phục vụ nhiều cửa hàng đồng thời mà không rò rỉ dữ liệu chéo giữa các Tenant.
+    \item \textbf{Concurrency Safety:} Các module liên quan tới tồn kho (Reserve/Confirm/Deduct) phải an toàn khi có nhiều request đồng thời, không phụ thuộc vào kiểm tra ở tầng giao diện.
+\end{itemize}
+
+\subsection{Application Messages List}
+
+\begin{longtable}{|p{0.6cm}|p{1.6cm}|p{1.5cm}|p{3cm}|p{6.5cm}|}
+    \hline
+    \textbf{\#} & \textbf{Mã} & \textbf{Loại} & \textbf{Ngữ cảnh} &
+    \textbf{Nội dung} \\
+    \hline
+    \endfirsthead
+    \hline
+    \textbf{\#} & \textbf{Mã} & \textbf{Loại} & \textbf{Ngữ cảnh} &
+    \textbf{Nội dung} \\
+    \hline
+    \endhead
+    1 & MSG01 & Error & Giữ chỗ tồn kho & "Không đủ tồn kho khả dụng cho sản phẩm này." (HTTP 409 Conflict) \\
+    \hline
+    2 & MSG02 & Success & Giữ chỗ tồn kho & "Giữ chỗ tồn kho thành công." \\
+    \hline
+    3 & MSG03 & Error & Checkout POS & "Giao dịch thất bại: tồn kho đã thay đổi, vui lòng thử lại." \\
+    \hline
+    4 & MSG04 & Success & Checkout POS & "Thanh toán thành công." \\
+    \hline
+    5 & MSG05 & Error & Nhập hàng & "Phiếu nhập chứa SKU không tồn tại trong hệ thống." \\
+    \hline
+    6 & MSG06 & Success & Nhập hàng & "Xác nhận phiếu nhập thành công, đã cập nhật giá vốn bình quân." \\
+    \hline
+    7 & MSG07 & Warning & Báo cáo tồn kho & "SKU [x] đã chạm ngưỡng tồn kho tối thiểu." \\
+    \hline
+    8 & MSG08 & Error & Sổ cái tồn kho & "Thao tác không được phép: InventoryTransaction chỉ cho phép ghi thêm (append-only)." \\
+    \hline
+    9 & MSG09 & Info & Đơn hàng & "Đơn hàng đã tự động bị hủy do quá thời gian giữ chỗ." \\
+    \hline
+    10 & MSG10 & Error & Đăng nhập & "Email/mật khẩu không chính xác." \\
+    \hline
+    \caption{Danh sách thông báo ứng dụng}
+    \label{tab:app-messages}
+\end{longtable}

@@ -1,0 +1,509 @@
+\subsection{System Functional Overview}
+
+\subsubsection{Business Process Flow Overview}
+
+Vì phạm vi bàn giao của đồ án là thiết kế hệ thống (không lập trình giao diện), luồng nghiệp vụ của OISM được mô tả bằng Sequence Diagram thay vì Screen Flow. Sáu luồng nghiệp vụ trọng yếu được trình bày chi tiết kèm sơ đồ minh họa ở các mục 3.3.3 (Sổ cái \& tồn kho), 3.3.5 (Trung tâm đơn hàng) và 3.3.6 (Chống bán vượt tồn) của chương này.
+
+\subsubsection{Định hướng giao diện (ngoài phạm vi bàn giao chi tiết)}
+
+Bảng dưới đây liệt kê các màn hình dự kiến của hệ thống hoàn chỉnh, dùng làm tham chiếu cho việc lập trình Frontend ở giai đoạn tiếp theo. \textbf{Các màn hình này chưa được thiết kế mockup chi tiết trong phạm vi đồ án hiện tại.}
+
+\begin{longtable}{|p{0.6cm}|p{3.2cm}|p{3.2cm}|p{6.5cm}|}
+    \hline
+    \textbf{\#} & \textbf{Feature} & \textbf{Screen (dự kiến)} & \textbf{Mô tả} \\
+    \hline
+    \endfirsthead
+    \hline
+    \textbf{\#} & \textbf{Feature} & \textbf{Screen (dự kiến)} & \textbf{Mô tả} \\
+    \hline
+    \endhead
+    1 & Xác thực & Login & Đăng nhập theo vai trò, điều hướng dashboard tương ứng \\
+    \hline
+    2 & Sản phẩm & Danh sách/Chi tiết sản phẩm & Quản lý Category, Brand, SKU, Barcode, giá bán \\
+    \hline
+    3 & Tồn kho & Sổ cái tồn kho (read-only) & Xem lịch sử InventoryTransaction theo SKU/chi nhánh \\
+    \hline
+    4 & Nhập hàng & Purchase Receipt & Tạo phiếu nhập, xem giá vốn bình quân sau khi xác nhận \\
+    \hline
+    5 & Chuyển kho & Stock Transfer & Tạo phiếu chuyển, xác nhận outbound/inbound \\
+    \hline
+    6 & Kiểm kho & Stocktake & Ghi số đếm thực tế, xem chênh lệch \\
+    \hline
+    7 & Đơn hàng & Order List / Order Detail & Xem, duyệt, hủy đơn theo trạng thái \\
+    \hline
+    8 & POS & Màn hình bán hàng & Tìm sản phẩm, giỏ hàng, thanh toán nhanh \\
+    \hline
+    9 & Báo cáo & Revenue Dashboard & Doanh thu, giá vốn, lợi nhuận gộp theo bộ lọc \\
+    \hline
+    10 & Cảnh báo & Stock Alert Panel & Danh sách SKU dưới ngưỡng tồn tối thiểu \\
+    \hline
+    \caption{Danh sách màn hình dự kiến (chưa thiết kế mockup chi tiết)}
+    \label{tab:screen-overview}
+\end{longtable}
+
+\subsubsection{Screen Authorization}
+
+\begin{longtable}{|p{4.5cm}|p{1.8cm}|p{1.8cm}|p{1.8cm}|p{3cm}|}
+    \hline
+    \textbf{Chức năng} & \textbf{Owner} & \textbf{Staff} & \textbf{Cashier} & \textbf{Ghi chú} \\
+    \hline
+    \endfirsthead
+    \hline
+    \textbf{Chức năng} & \textbf{Owner} & \textbf{Staff} & \textbf{Cashier} & \textbf{Ghi chú} \\
+    \hline
+    \endhead
+    Quản lý Tenant/Chi nhánh/Người dùng & \checkmark & -- & -- & Chỉ Owner \\
+    \hline
+    Quản lý sản phẩm/SKU/giá bán & \checkmark & -- & -- & Chỉ Owner \\
+    \hline
+    Xem sổ cái tồn kho & \checkmark & \checkmark & -- & Chỉ đọc \\
+    \hline
+    Nhập hàng / Chuyển kho / Kiểm kho & -- & \checkmark & -- & Staff thực hiện \\
+    \hline
+    Xử lý đơn hàng (duyệt/hủy) & \checkmark & \checkmark & -- & \\
+    \hline
+    Bán hàng tại quầy (POS) & -- & -- & \checkmark & Chỉ Cashier \\
+    \hline
+    Báo cáo doanh thu \& lợi nhuận gộp & \checkmark & -- & -- & Dữ liệu tài chính nhạy cảm \\
+    \hline
+    Báo cáo tồn kho \& cảnh báo & \checkmark & \checkmark & -- & \\
+    \hline
+    \caption{Ma trận phân quyền theo vai trò (RBAC)}
+    \label{tab:rbac-matrix}
+\end{longtable}
+
+\subsubsection{Non-Screen Functions}
+
+\begin{longtable}{|p{0.6cm}|p{4cm}|p{2.8cm}|p{6cm}|}
+    \hline
+    \textbf{\#} & \textbf{Feature} & \textbf{System Function} & \textbf{Mô tả} \\
+    \hline
+    \endfirsthead
+    \hline
+    \textbf{\#} & \textbf{Feature} & \textbf{System Function} & \textbf{Mô tả} \\
+    \hline
+    \endhead
+    1 & Tính giá vốn bình quân gia quyền & Domain Service & Tự động tính lại AvgCost khi xác nhận Purchase Receipt \\
+    \hline
+    2 & Chống bán vượt tồn kho & Locking Mechanism & SELECT...FOR UPDATE khi Reserve/Confirm/Deduct trên StockBalance \\
+    \hline
+    3 & Tự hủy đơn Reserved quá hạn & Background Job (Hangfire) & Định kỳ quét đơn Reserved quá thời gian giữ chỗ, tự động Cancel \\
+    \hline
+    4 & Tổng hợp báo cáo hằng ngày & Background Job (Hangfire) & Tính toán trước dữ liệu báo cáo doanh thu/tồn kho theo lịch \\
+    \hline
+    5 & Cảnh báo tồn kho thấp & Event Trigger & Kiểm tra available so với ngưỡng, đẩy cảnh báo dashboard \\
+    \hline
+    6 & Đẩy thông báo real-time & SignalR Hub & Đẩy sự kiện đơn hàng mới tới Admin/POS không cần tải lại trang \\
+    \hline
+    \caption{Các chức năng không có màn hình (chạy nền/hệ thống)}
+    \label{tab:non-screen-functions}
+\end{longtable}
+
+\subsubsection{Entity Relationship Diagram}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\parbox{0.9\textwidth}{\centering\vspace{4cm}\textit{[Chèn hình tại đây]}\vspace{4cm}}}
+    \caption{Sơ đồ ERD toàn bộ cơ sở dữ liệu (17 thực thể)}
+    \label{fig:erd-conceptual}
+\end{figure}
+\begin{imgnote}
+📌 Hình 3 — Cần bổ sung hình: \texttt{Hinh\_03\_ERD\_OISM.png} — ERD đầy đủ thể hiện toàn bộ 17 thực thể, quan hệ (1-n, n-n), khóa chính/khóa ngoại. Xem chi tiết danh sách thực thể tại Chương~4, mục~4.2.
+\end{imgnote}
+
+\subsubsection{UML Class Diagram}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\parbox{0.9\textwidth}{\centering\vspace{4cm}\textit{[Chèn hình tại đây]}\vspace{4cm}}}
+    \caption{UML Class Diagram các entity chính}
+    \label{fig:class-diagram}
+\end{figure}
+\begin{imgnote}
+📌 Hình 4 — Cần bổ sung hình: \texttt{Hinh\_04\_ClassDiagram\_OISM.png} — UML Class Diagram các entity chính, kèm thuộc tính, phương thức nghiệp vụ (VD: \texttt{Order.Confirm()}, \texttt{StockBalance.Reserve()}) và quan hệ multiplicity.
+\end{imgnote}
+\FloatBarrier
+
+\subsection{FR-AUTH: Xác thực \& Đa khách thuê (Multi-tenant Authentication)}
+
+\subsubsection{Đăng nhập}
+\textbf{Actor:} Owner, Staff, Cashier \\
+\textbf{Function trigger:} Người dùng nhập Email/Phone + Password
+
+\textbf{Function description:}
+\begin{itemize}
+    \item Purpose: Xác thực người dùng và điều hướng theo vai trò.
+    \item Data processing: Xác thực thông tin đăng nhập, tạo JWT Access Token (60 phút) chứa TenantId/UserId/Role, kèm Refresh Token.
+\end{itemize}
+
+\textbf{Function Details:}
+\begin{itemize}
+    \item Nếu đăng nhập thành công → điều hướng Dashboard/POS theo role.
+    \item Nếu thất bại → hiển thị thông báo lỗi, không tiết lộ tài khoản có tồn tại hay không (chống dò tài khoản).
+    \item Business Rules: Áp dụng RBAC — mỗi role chỉ thấy chức năng thuộc quyền của mình (xem Bảng~\ref{tab:rbac-matrix}). Mật khẩu băm bằng BCrypt/Argon2 (NFR-SEC-01).
+\end{itemize}
+
+\subsubsection{Đăng ký Tenant mới}
+\textbf{Actor:} Owner \\
+\textbf{Function trigger:} Người dùng mới điền form đăng ký cửa hàng
+
+\textbf{Function description:}
+\begin{itemize}
+    \item Purpose: Tạo không gian dữ liệu cô lập cho một doanh nghiệp/cửa hàng mới.
+    \item Data processing: Sinh TenantId duy nhất, khởi tạo tài khoản Owner đầu tiên gắn với Tenant đó.
+\end{itemize}
+
+\textbf{Function Details:}
+\begin{itemize}
+    \item Business Rules: Mỗi TenantId là ranh giới cô lập dữ liệu tuyệt đối — mọi bảng nghiệp vụ đều áp dụng EF Core Global Query Filter theo TenantId (NFR-TENANT-01).
+    \item Normal Case: Đăng ký hợp lệ → tạo Tenant + tài khoản Owner → chuyển hướng đăng nhập.
+    \item Abnormal Case: Email đã tồn tại ở một Tenant khác → cho phép (vì tách biệt theo Tenant), nhưng trùng trong cùng Tenant → báo lỗi.
+\end{itemize}
+
+\subsubsection{Các chức năng còn lại của nhóm FR-AUTH}
+
+\begin{longtable}{|p{2cm}|p{4.5cm}|p{7cm}|}
+    \hline
+    \textbf{Mã} & \textbf{Tên chức năng} & \textbf{Tóm tắt} \\
+    \hline
+    \endfirsthead
+    \hline
+    \textbf{Mã} & \textbf{Tên chức năng} & \textbf{Tóm tắt} \\
+    \hline
+    \endhead
+    FR-AUTH-03 & Role-Based Access Control & Cấu hình và kiểm soát quyền API/màn hình theo 3 vai trò \\
+    \hline
+    FR-AUTH-04 & Branch Management & Owner tạo, cập nhật, bật/tắt hiển thị chi nhánh và kho hàng thuộc quyền sở hữu \\
+    \hline
+    \caption{Tóm tắt các FR còn lại — nhóm FR-AUTH}
+\end{longtable}
+
+\subsection{FR-PROD: Quản lý sản phẩm \& biến thể (Product \& Variant Management)}
+
+\subsubsection{Quản lý sản phẩm \& biến thể/SKU}
+\textbf{Actor:} Owner \\
+\textbf{Function trigger:} Owner chọn "Thêm sản phẩm mới"
+
+\textbf{Function description:}
+\begin{itemize}
+    \item Purpose: Hỗ trợ sản phẩm đơn giản và sản phẩm có biến thể (màu, size...).
+    \item Data processing: Tạo bản ghi Product, sinh các ProductVariant (SKU) tương ứng với từng tổ hợp thuộc tính.
+\end{itemize}
+
+\textbf{Function Details:}
+\begin{itemize}
+    \item Validation: SKUCode phải duy nhất trong phạm vi một TenantId.
+    \item Business Rules: Mỗi biến thể là đơn vị quản lý tồn kho độc lập (không quản lý tồn theo Product cha).
+    \item Normal Case: Nhập đủ thông tin → lưu Product + Variant thành công.
+    \item Abnormal Case: SKUCode trùng trong cùng Tenant → báo lỗi validation.
+\end{itemize}
+
+\subsubsection{Các chức năng còn lại của nhóm FR-PROD}
+
+\begin{longtable}{|p{2cm}|p{4.5cm}|p{7cm}|}
+    \hline
+    \textbf{Mã} & \textbf{Tên chức năng} & \textbf{Tóm tắt} \\
+    \hline
+    \endfirsthead
+    \hline
+    \textbf{Mã} & \textbf{Tên chức năng} & \textbf{Tóm tắt} \\
+    \hline
+    \endhead
+    FR-PROD-01 & Category \& Brand Management & Quản lý danh mục sản phẩm phân cấp và thương hiệu \\
+    \hline
+    FR-PROD-03 & Barcode Management & Tự sinh/nhập tay mã vạch EAN-13/Code128 theo SKU \\
+    \hline
+    FR-PROD-04 & Listed Price Management & Thiết lập giá bán lẻ/bán sỉ theo SKU, tách biệt giá vốn \\
+    \hline
+    \caption{Tóm tắt các FR còn lại — nhóm FR-PROD}
+\end{longtable}
+
+\subsection{FR-INV: Sổ cái \& Quản lý tồn kho (Inventory Ledger \& Stock Management)}
+
+\subsubsection{Ghi nhận sổ cái tồn kho (Inventory Ledger Recording)}
+\textbf{Actor:} Hệ thống (kích hoạt bởi mọi nghiệp vụ liên quan tồn kho) \\
+\textbf{Function trigger:} Bất kỳ nghiệp vụ nào làm thay đổi tồn kho (nhập, xuất, bán, trả, kiểm kho, chuyển kho)
+
+\textbf{Function description:}
+\begin{itemize}
+    \item Purpose: Ghi nhận tuyệt đối mọi biến động tồn kho, đảm bảo khả năng truy vết/kiểm toán.
+    \item Data processing: Chèn (INSERT) một dòng mới vào bảng InventoryTransaction: TenantId, BranchId, SKUId, Type (IN/OUT), Quantity, BalanceAfter, ReferenceId, CreatedAt.
+\end{itemize}
+
+\textbf{Function Details:}
+\begin{itemize}
+    \item Business Rules (\textbf{quan trọng nhất của toàn hệ thống}): Bảng InventoryTransaction là append-only tuyệt đối — cấm UPDATE/DELETE ở mọi tầng, kể cả truy cập SQL trực tiếp (NFR-SEC-03). Cơ chế thực thi bằng trigger/rule ở tầng PostgreSQL (chi tiết tại Chương~4, mục~4.2).
+    \item Mọi điều chỉnh sai sót phải tạo dòng bù trừ mới (compensating transaction), không được sửa dòng gốc.
+\end{itemize}
+
+\subsubsection{Nhập hàng \& tính giá vốn bình quân (Purchase Receipt Management)}
+\textbf{Actor:} Staff \\
+\textbf{Function trigger:} Staff tạo phiếu nhập hàng và xác nhận
+
+\textbf{Function description:}
+\begin{itemize}
+    \item Purpose: Ghi nhận nhập hàng từ nhà cung cấp, tự động cập nhật giá vốn.
+    \item Data processing: Với mỗi dòng SKU trong phiếu, tính lại giá vốn theo công thức bình quân gia quyền, ghi Ledger loại IN, cập nhật StockBalance.OnHand và AvgCost.
+\end{itemize}
+
+\textbf{Function Details:}
+\begin{itemize}
+    \item Business Rules: New Cost = ((Old Stock × Old Cost) + (Import Qty × Import Price)) / (Old Stock + Import Qty).
+    \item Normal Case: Xác nhận phiếu → tính giá vốn mới → ghi Ledger thành công trong 1 transaction.
+    \item Abnormal Case: Phiếu có dòng SKU không tồn tại trong Tenant → từ chối toàn bộ phiếu (rollback).
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\parbox{0.85\textwidth}{\centering\vspace{3.5cm}\textit{[Chèn hình tại đây]}\vspace{3.5cm}}}
+    \caption{Sequence Diagram — luồng nhập hàng \& tính giá vốn bình quân}
+    \label{fig:seq-purchase-receipt}
+\end{figure}
+\begin{imgnote}
+📌 Hình 7 — Cần bổ sung hình: \texttt{Hinh\_07\_Sequence\_PurchaseReceipt.png} — PurchaseReceipt → tính AvgCost → cập nhật StockBalance → ghi Ledger IN.
+\end{imgnote}
+
+\subsubsection{Chuyển kho (Stock Transfer Management)}
+\textbf{Actor:} Staff \\
+\textbf{Function trigger:} Staff tạo phiếu chuyển kho giữa 2 chi nhánh
+
+\textbf{Function description:}
+\begin{itemize}
+    \item Purpose: Di chuyển tồn kho giữa các chi nhánh mà vẫn giữ tính toàn vẹn Ledger.
+    \item Data processing: Quy trình 2 bước — Outbound (xuất tạm tại chi nhánh nguồn) và Inbound (xác nhận nhập tại chi nhánh đích).
+\end{itemize}
+
+\textbf{Function Details:}
+\begin{itemize}
+    \item Normal Case: Outbound ghi Ledger OUT tại nguồn (trạng thái InTransit) → Inbound ghi Ledger IN tại đích (trạng thái Completed).
+    \item Abnormal Case: Chi nhánh đích từ chối nhận hàng → cần quy trình hoàn trả riêng (ghi Ledger IN ngược lại tại chi nhánh nguồn).
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\parbox{0.85\textwidth}{\centering\vspace{3.5cm}\textit{[Chèn hình tại đây]}\vspace{3.5cm}}}
+    \caption{Sequence Diagram — luồng chuyển kho 2 bước (Outbound/Inbound)}
+    \label{fig:seq-stock-transfer}
+\end{figure}
+\begin{imgnote}
+📌 Hình 8 — Cần bổ sung hình: \texttt{Hinh\_08\_Sequence\_StockTransfer.png} — 2 bước Outbound/Inbound giữa 2 chi nhánh.
+\end{imgnote}
+
+\subsubsection{Kiểm kho (Stocktake Management)}
+\textbf{Actor:} Staff \\
+\textbf{Function trigger:} Staff tạo phiên kiểm kho cho một chi nhánh
+
+\textbf{Function description:}
+\begin{itemize}
+    \item Purpose: Đối chiếu tồn kho thực tế với số liệu hệ thống.
+    \item Data processing: Ghi CountedQty theo từng SKU, so sánh với SystemQty (từ StockBalance) để tính VarianceQty.
+\end{itemize}
+
+\textbf{Function Details:}
+\begin{itemize}
+    \item Business Rules: Nếu có chênh lệch, sinh bút toán điều chỉnh (Adjustment) vào Ledger để đưa OnHand khớp với số đếm thực tế — không sửa trực tiếp OnHand.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\parbox{0.85\textwidth}{\centering\vspace{3.5cm}\textit{[Chèn hình tại đây]}\vspace{3.5cm}}}
+    \caption{Sequence Diagram — luồng kiểm kho \& sinh bút toán điều chỉnh}
+    \label{fig:seq-stocktake}
+\end{figure}
+\begin{imgnote}
+📌 Hình 9 — Cần bổ sung hình: \texttt{Hinh\_09\_Sequence\_Stocktake.png} — tạo phiên kiểm kho → so sánh → sinh bút toán Adjustment.
+\end{imgnote}
+\FloatBarrier
+
+\subsection{FR-COST: Tính giá vốn bình quân gia quyền (Weighted Average Cost Calculation)}
+
+\subsubsection{Tự động tính giá vốn (Automated Batch COGS Calculation)}
+\textbf{Actor:} Hệ thống (kích hoạt khi xác nhận Purchase Receipt) \\
+\textbf{Function trigger:} Staff xác nhận phiếu nhập hàng (xem mục 3.3.3.2)
+
+\textbf{Function description:}
+\begin{itemize}
+    \item Purpose: Đảm bảo giá vốn luôn phản ánh đúng chi phí thực tế khi nhập hàng nhiều đợt với giá khác nhau.
+    \item Data processing: Cập nhật StockBalance.AvgCost theo công thức bình quân gia quyền ngay khi phiếu nhập được xác nhận, trong cùng transaction với việc ghi Ledger.
+\end{itemize}
+
+\textbf{Function Details:}
+\begin{itemize}
+    \item Business Rules: Đây là phép tính \textbf{bắt buộc đồng bộ} (không cho phép xử lý bất đồng bộ/độ trễ) vì ảnh hưởng trực tiếp đến các đơn hàng được Confirm ngay sau đó.
+\end{itemize}
+
+\subsubsection{Snapshot giá vốn khi xuất kho (COGS Snapshot on Dispatch)}
+\textbf{Actor:} Hệ thống \\
+\textbf{Function trigger:} Đơn hàng chuyển sang trạng thái Confirmed hoặc thanh toán tại POS
+
+\textbf{Function description:}
+\begin{itemize}
+    \item Purpose: Đảm bảo báo cáo lợi nhuận không bị thay đổi ngược thời gian khi giá vốn trung bình biến động sau đó.
+    \item Data processing: Chốt (snapshot) giá trị AvgCost hiện tại của SKU vào OrderItem.CostPrice tại thời điểm Confirm.
+\end{itemize}
+
+\textbf{Function Details:}
+\begin{itemize}
+    \item Business Rules: OrderItem.CostPrice là bất biến sau khi ghi — không cập nhật lại kể cả khi AvgCost của SKU thay đổi sau đó (đảm bảo tính đúng đắn lịch sử báo cáo lợi nhuận theo từng thời điểm bán).
+\end{itemize}
+
+\subsection{FR-ORD: Trung tâm đơn hàng tập trung (Centralized Order Hub)}
+
+\subsubsection{Vòng đời đơn hàng (Order State Machine)}
+\textbf{Actor:} Hệ thống, Staff (thao tác chuyển trạng thái thủ công khi cần) \\
+\textbf{Function trigger:} Đơn hàng được tạo từ bất kỳ kênh nào (POS, Admin, Webhook)
+
+\textbf{Function description:}
+\begin{itemize}
+    \item Purpose: Đảm bảo mọi đơn hàng tuân theo đúng một vòng đời nghiêm ngặt, không có trạng thái mơ hồ.
+    \item Data processing: Order.Status chuyển tuần tự Draft → Reserved → Confirmed → Completed, với nhánh rẽ Cancelled có thể xảy ra từ Draft, Reserved hoặc Confirmed.
+\end{itemize}
+
+\textbf{Function Details:}
+\begin{itemize}
+    \item Business Rules: Mọi chuyển trạng thái không hợp lệ (ví dụ Completed → Reserved) phải bị từ chối ngay ở tầng Domain, không phụ thuộc vào việc kiểm tra ở tầng giao diện.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\parbox{0.85\textwidth}{\centering\vspace{3.5cm}\textit{[Chèn hình tại đây]}\vspace{3.5cm}}}
+    \caption{State Diagram — vòng đời đơn hàng (Order State Machine)}
+    \label{fig:state-order-lifecycle}
+\end{figure}
+\begin{imgnote}
+📌 Hình 10 — Cần bổ sung hình: \texttt{Hinh\_10\_StateDiagram\_OrderLifecycle.png} — toàn bộ trạng thái và điều kiện chuyển trạng thái hợp lệ của Order.
+\end{imgnote}
+
+\subsubsection{Chuẩn hóa đơn hàng đa kênh \& Xử lý đơn}
+\textbf{Actor:} Kênh TMĐT (Webhook), Staff \\
+\textbf{Function trigger:} Webhook Simulator gửi payload / Staff tạo đơn thủ công tại Admin
+
+\textbf{Function description:}
+\begin{itemize}
+    \item Purpose: Chuẩn hóa đơn hàng từ mọi kênh về một Canonical Order Model duy nhất.
+    \item Data processing: Ánh xạ payload đầu vào (khác định dạng theo từng kênh) về cùng một schema Order/OrderItem nội bộ.
+\end{itemize}
+
+\textbf{Function Details:}
+\begin{itemize}
+    \item Normal Case: Staff xem đơn chờ xử lý, duyệt, in phiếu giao hàng hoặc hủy đơn (FR-ORD-03).
+    \item Abnormal Case: Payload webhook thiếu trường bắt buộc → từ chối, ghi log lỗi tích hợp.
+\end{itemize}
+
+\subsection{FR-RSE: Cơ chế chống bán vượt tồn (Anti-Oversell Mechanism)}
+
+\subsubsection{Giữ chỗ \& Trừ/Giải phóng tồn kho (Reserve / Deduct / Release)}
+\textbf{Actor:} Hệ thống \\
+\textbf{Function trigger:} Đơn hàng online vào Order Hub (Reserve); đơn chuyển Confirmed (Deduct) hoặc Cancelled (Release)
+
+\textbf{Function description:}
+\begin{itemize}
+    \item Purpose: Đây là chức năng \textbf{quan trọng nhất} của toàn hệ thống — loại bỏ tuyệt đối khả năng bán vượt tồn kho ngay cả khi nhiều đơn hàng tranh chấp đồng thời.
+    \item Data processing: Tính available = on\_hand − reserved theo thời gian thực; khóa dòng StockBalance (SELECT...FOR UPDATE) trước khi tăng/giảm reserved hoặc on\_hand.
+\end{itemize}
+
+\textbf{Function Details:}
+\begin{itemize}
+    \item Validation: Nếu available < số lượng đặt mua → từ chối đơn (reject), trả lỗi 409 Conflict.
+    \item Business Rules (\textbf{NFR-PERF-02}): Bắt buộc dùng Pessimistic Locking (\texttt{SELECT...FOR UPDATE}) hoặc Optimistic Locking (Version Check) ở tầng cơ sở dữ liệu — không được xử lý kiểm tra tồn kho chỉ ở tầng ứng dụng, vì điều này không đủ để chống race-condition khi có nhiều request đồng thời.
+    \item Normal Case: Reserve thành công → tăng reserved, đơn chuyển Reserved. Confirm → trừ on\_hand, giảm reserved, ghi Ledger OUT. Cancel → giảm reserved, trả lại tồn khả dụng.
+    \item Abnormal Case (kịch bản Flash Sale): 50 đơn hàng đồng thời tranh 1 SKU chỉ còn 1 đơn vị tồn → chỉ đúng 1 đơn được Reserve thành công, 49 đơn còn lại bị reject — không có trường hợp available âm.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\parbox{0.85\textwidth}{\centering\vspace{3.5cm}\textit{[Chèn hình tại đây]}\vspace{3.5cm}}}
+    \caption{Sequence Diagram — luồng giữ chỗ tồn kho (Stock Reservation)}
+    \label{fig:seq-stock-reservation}
+\end{figure}
+\begin{imgnote}
+📌 Hình 5 — Cần bổ sung hình: \texttt{Hinh\_05\_Sequence\_StockReservation.png} — Order Hub → StockBalance (lock) → Ledger, thể hiện nhánh reject khi thiếu tồn.
+\end{imgnote}
+
+\subsection{FR-POS: Bán hàng tại quầy — PWA POS (Counter Sales)}
+
+\subsubsection{Checkout nhanh tại quầy (Fast Checkout Workflow)}
+\textbf{Actor:} Cashier \\
+\textbf{Function trigger:} Cashier nhấn "Thanh toán" sau khi thêm sản phẩm vào giỏ hàng
+
+\textbf{Function description:}
+\begin{itemize}
+    \item Purpose: Hoàn tất một giao dịch bán hàng tại quầy trong thời gian ngắn nhất, vẫn đảm bảo không bán vượt tồn khả dụng.
+    \item Data processing: Thực hiện chuỗi Reserve → Confirm → Deduct trong \textbf{một giao dịch cơ sở dữ liệu nguyên tử (atomic transaction)} duy nhất.
+\end{itemize}
+
+\textbf{Function Details:}
+\begin{itemize}
+    \item Validation: Kiểm tra available tức thời khi Cashier chọn sản phẩm (FR-POS-02), chặn thêm vào giỏ nếu vượt tồn khả dụng — bảo vệ phần tồn đã được giữ chỗ bởi đơn online.
+    \item Business Rules (NFR-SEC-02): Nếu bất kỳ bước nào trong chuỗi lỗi (ví dụ hết tồn giữa chừng do đơn khác vừa xử lý xong) → rollback toàn bộ transaction, không lưu trạng thái trung gian.
+    \item Normal Case: Thanh toán thành công → in hóa đơn qua Browser Print API, ghi Ledger OUT, snapshot CostPrice.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\parbox{0.85\textwidth}{\centering\vspace{3.5cm}\textit{[Chèn hình tại đây]}\vspace{3.5cm}}}
+    \caption{Sequence Diagram — luồng thanh toán nhanh tại POS (Fast Checkout)}
+    \label{fig:seq-fast-checkout}
+\end{figure}
+\begin{imgnote}
+📌 Hình 6 — Cần bổ sung hình: \texttt{Hinh\_06\_Sequence\_FastCheckout.png} — POS → Order → StockBalance → Ledger trong 1 transaction, kèm nhánh rollback.
+\end{imgnote}
+
+\subsubsection{Các chức năng còn lại của nhóm FR-POS}
+
+\begin{longtable}{|p{2cm}|p{4.5cm}|p{7cm}|}
+    \hline
+    \textbf{Mã} & \textbf{Tên chức năng} & \textbf{Tóm tắt} \\
+    \hline
+    \endfirsthead
+    \hline
+    \textbf{Mã} & \textbf{Tên chức năng} & \textbf{Tóm tắt} \\
+    \hline
+    \endhead
+    FR-POS-01 & Fast Sales Interface & Giao diện tối ưu cảm ứng/phím tắt, tìm sản phẩm theo Tên/SKU/Barcode \\
+    \hline
+    FR-POS-03 & Checkout \& Receipt Printing & Thanh toán tiền mặt/QR, in hóa đơn qua Browser Print API \\
+    \hline
+    \caption{Tóm tắt các FR còn lại — nhóm FR-POS}
+\end{longtable}
+
+\subsection{FR-REP: Báo cáo \& Cảnh báo (Reports \& Alerts)}
+
+\begin{longtable}{|p{2cm}|p{4.5cm}|p{7cm}|}
+    \hline
+    \textbf{Mã} & \textbf{Tên chức năng} & \textbf{Tóm tắt} \\
+    \hline
+    \endfirsthead
+    \hline
+    \textbf{Mã} & \textbf{Tên chức năng} & \textbf{Tóm tắt} \\
+    \hline
+    \endhead
+    FR-REP-01 & Revenue \& Gross Profit Report & Doanh thu thuần, tổng giá vốn, lợi nhuận gộp; lọc theo thời gian/chi nhánh/kênh/SKU \\
+    \hline
+    FR-REP-02 & Inventory \& Velocity Report & Giá trị tồn kho theo giá vốn, sản phẩm bán chạy/tồn đọng chậm \\
+    \hline
+    FR-REP-03 & Stock Alert & Thông báo tự động khi available ≤ ngưỡng đặt hàng lại tối thiểu theo SKU \\
+    \hline
+    \caption{Tóm tắt chức năng — nhóm FR-REP}
+\end{longtable}
+
+\subsection{FR-SIM: Webhook Simulator \& Xử lý thời gian thực}
+
+\begin{longtable}{|p{2cm}|p{4.5cm}|p{7cm}|}
+    \hline
+    \textbf{Mã} & \textbf{Tên chức năng} & \textbf{Tóm tắt} \\
+    \hline
+    \endfirsthead
+    \hline
+    \textbf{Mã} & \textbf{Tên chức năng} & \textbf{Tóm tắt} \\
+    \hline
+    \endhead
+    FR-SIM-01 & E-commerce Webhook Simulator & Gửi payload giả lập Shopee/TikTok/Lazada để kiểm tra throughput \& locking \\
+    \hline
+    FR-SIM-02 & Real-time Push Notification & SignalR đẩy cảnh báo đơn hàng mới đến Admin/POS \\
+    \hline
+    FR-SIM-03 & Background Processing & Hangfire: tự hủy đơn Reserved quá hạn, tổng hợp báo cáo hằng ngày \\
+    \hline
+    \caption{Tóm tắt chức năng — nhóm FR-SIM}
+\end{longtable}
+\FloatBarrier

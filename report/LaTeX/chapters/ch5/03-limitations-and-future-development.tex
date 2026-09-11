@@ -1,0 +1,20 @@
+\section{Hạn chế và hướng phát triển}
+
+\subsection{Hạn chế hiện tại}
+Kế thừa các giới hạn đã nêu ở Chương~1 (LI-1, LI-2, LI-3), nhóm ghi nhận các hạn chế cụ thể sau khi hoàn thành thiết kế và triển khai cơ sở dữ liệu:
+\begin{itemize}
+    \item \textbf{Chưa có phần mềm chạy được đầu-cuối:} Toàn bộ chức năng ở Chương 3 mới tồn tại ở dạng đặc tả và schema database, chưa thể demo trực tiếp trên giao diện người dùng.
+    \item \textbf{Chưa kiểm thử concurrency thực tế:} Cơ chế chống bán vượt tồn (Anti-Oversell) mới được kiểm chứng ở mức mô phỏng SQL, chưa đo lường được dưới tải thật của nhiều request API đồng thời.
+    \item \textbf{Webhook Simulator chỉ ở mức thiết kế:} Chưa có endpoint thật để nhận payload từ Shopee/TikTok Shop/Lazada.
+    \item \textbf{Chưa có giao diện để đánh giá Usability:} Các chỉ tiêu về trải nghiệm người dùng (thời gian checkout dưới 3 click...) chưa thể đánh giá vì chưa có Frontend.
+\end{itemize}
+
+\subsection{Hướng phát triển}
+\begin{itemize}
+    \item \textbf{Giai đoạn tiếp theo — Lập trình Backend:} Hiện thực Backend API (.NET~8) theo đúng Clean Architecture và schema đã thiết kế, ưu tiên hiện thực trước module Inventory Ledger và Anti-Oversell Engine vì đây là phần lõi kỹ thuật khó nhất.
+    \item \textbf{Lập trình Frontend:} Admin Dashboard và POS Application (PWA) theo đặc tả màn hình dự kiến ở Chương~3.
+    \item \textbf{Kiểm thử tải thực tế:} Thực hiện concurrency test với 50+ request đồng thời qua API thật để kiểm chứng đầy đủ NFR-PERF-02.
+    \item \textbf{Tích hợp AI dự báo nhập hàng:} Như đề cương gốc đã đề xuất (Task package 5), bổ sung mô hình gợi ý số lượng đặt hàng lại dựa trên lịch sử bán hàng.
+    \item \textbf{Tích hợp API thật của các sàn TMĐT:} Thay thế Webhook Simulator bằng kết nối thật tới Shopee Open API, TikTok Shop Partner API, Lazada Open Platform.
+    \item \textbf{CI/CD \& Containerization đầy đủ:} Thiết lập pipeline GitHub Actions/GitLab CI để tự động build, test và deploy khi hệ thống có Backend/Frontend hoàn chỉnh.
+\end{itemize}

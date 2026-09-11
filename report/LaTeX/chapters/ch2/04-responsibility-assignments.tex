@@ -1,0 +1,35 @@
+\section{Phân công Trách nhiệm}
+Ký hiệu: D~=~Thực hiện chính; R~=~Kiểm tra/Review; S~=~Hỗ trợ; I~=~Được thông báo.
+
+\begin{table}[htbp]
+    \centering
+    \small
+    \caption{Bảng phân công trách nhiệm}
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{|p{5.5cm}|p{2cm}|p{2cm}|p{2cm}|p{2cm}|}
+        \hline
+        \textbf{Trách nhiệm} & \textbf{TV1 (Data Architect)} & \textbf{TV2 (DB Engineer)} & \textbf{TV3 (Solution Architect)} & \textbf{TV4 (QA \& Docs)} \\
+        \hline
+        Lập kế hoạch và theo dõi tiến độ & S & S & S & D \\
+        \hline
+        ERD, DDL, trigger, Data Dictionary & D & S & R & I \\
+        \hline
+        Tạo Database thật, seed data, script kiểm tra toàn vẹn & S & D & I & I \\
+        \hline
+        Architecture/Use Case/Class/Sequence Diagram, API Spec & S & I & D & R \\
+        \hline
+        RTM, Test Plan, GitLab, README, báo cáo cuối & I & I & S & D \\
+        \hline
+        Soạn thảo Chương 1 -- Giới thiệu dự án & S & S & S & D \\
+        \hline
+        Soạn thảo Chương 2 -- Kế hoạch quản lý & S & S & S & D \\
+        \hline
+        Soạn thảo Chương 3 -- SRS & D & S & D & R \\
+        \hline
+        Soạn thảo Chương 4 -- Triển khai CSDL \& Kiểm thử & S & D & I & R \\
+        \hline
+        Soạn thảo Chương 5 -- Đánh giá \& hướng phát triển & S & S & S & D \\
+        \hline
+    \end{tabular}
+    }
+\end{table}

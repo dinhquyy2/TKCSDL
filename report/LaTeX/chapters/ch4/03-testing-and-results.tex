@@ -1,0 +1,121 @@
+\section{Kiểm thử Cơ sở dữ liệu}
+
+\subsection{Phạm vi kiểm thử}
+Vì hệ thống chưa có Backend thật (mục~\ref{sec:scope-limitations}), kiểm thử trong phạm vi đồ án diễn ra hoàn toàn ở \textbf{mức cơ sở dữ liệu} — chạy trực tiếp script SQL để kiểm chứng các ràng buộc và công thức nghiệp vụ trọng yếu:
+\begin{itemize}
+    \item Ràng buộc append-only trên \texttt{inventory\_transactions} (thử UPDATE/DELETE, kỳ vọng bị chặn).
+    \item Công thức giá vốn bình quân gia quyền (so sánh giá trị \texttt{avg\_cost} tính toán với giá trị kỳ vọng theo kịch bản nhập hàng nhiều đợt ở mục~4.2.7).
+    \item Ràng buộc \texttt{available = on\_hand - reserved} không âm (đã được ép buộc ngay ở tầng schema bằng \texttt{CHECK} constraint, xem mục~4.2.3).
+    \item Tính duy nhất của \texttt{sku\_code} trong phạm vi Tenant (BR-03).
+    \item Cô lập dữ liệu đa tenant: truy vấn chéo TenantId phải trả về rỗng.
+    \item Đối chiếu tổng Ledger với StockBalance (kiểm chứng tính đúng đắn của "read model" đã phân tích ở mục~4.2.2).
+\end{itemize}
+
+\textbf{Không nằm trong phạm vi kiểm thử của học kỳ này:} Kiểm thử tải thực tế qua API (hiện chỉ mô phỏng bằng nhiều phiên SQL song song như mục~4.3.4), kiểm thử giao diện (chưa có Frontend), kiểm thử tích hợp Webhook thật.
+
+\subsection{Kiểm chứng ràng buộc Append-only}
+Chạy trực tiếp 2 câu lệnh dưới đây trên một dòng \texttt{inventory\_transactions} đã tồn tại từ seed data, cả hai đều \textbf{phải thất bại}:
+
+\begin{lstlisting}
+-- Test 1: thu UPDATE truc tiep
+UPDATE inventory_transactions
+SET quantity = 999
+WHERE id = :existing_transaction_id;
+-- Ket qua ky vong:
+-- ERROR:  inventory_transactions is append-only. UPDATE is not allowed.
+-- Use a compensating entry instead.
+
+-- Test 2: thu DELETE truc tiep
+DELETE FROM inventory_transactions
+WHERE id = :existing_transaction_id;
+-- Ket qua ky vong:
+-- ERROR:  inventory_transactions is append-only. DELETE is not allowed.
+-- Use a compensating entry instead.
+\end{lstlisting}
+
+Cả hai câu lệnh đều bị trigger \texttt{fn\_block\_ledger\_modification()} (mục~4.2.4) chặn lại và rollback toàn bộ transaction — xác nhận NFR-SEC-03 được thực thi đúng ở tầng cơ sở dữ liệu, không phụ thuộc vào việc Backend có kiểm tra hay không.
+
+\subsection{Kiểm chứng tính toàn vẹn Ledger $\leftrightarrow$ StockBalance}
+Script dưới đây đối chiếu số dư trong \texttt{stock\_balances} với tổng cộng dồn từ toàn bộ lịch sử \texttt{inventory\_transactions} — nếu thiết kế và dữ liệu đúng, truy vấn phải trả về \textbf{0 dòng} (không có sai lệch):
+
+\begin{lstlisting}
+SELECT
+    sb.sku_id,
+    sb.branch_id,
+    sb.on_hand AS balance_on_hand,
+    SUM(CASE WHEN it.type = 'IN' THEN it.quantity
+             ELSE -it.quantity END)   AS ledger_computed_on_hand
+FROM stock_balances sb
+JOIN inventory_transactions it
+    ON it.sku_id = sb.sku_id AND it.branch_id = sb.branch_id
+GROUP BY sb.sku_id, sb.branch_id, sb.on_hand
+HAVING sb.on_hand <>
+    SUM(CASE WHEN it.type = 'IN' THEN it.quantity
+             ELSE -it.quantity END);
+-- Ket qua ky vong: 0 dong (khong co SKU nao bi lech)
+\end{lstlisting}
+
+\subsection{Kiểm chứng công thức giá vốn bình quân}
+Dựa trên kịch bản seed data 2 đợt nhập tại mục~4.2.7 (100 đơn vị giá 50.000đ, sau đó thêm 50 đơn vị giá 56.000đ), giá trị \texttt{avg\_cost} kỳ vọng được tính tay như sau:
+\[
+\text{New Cost} = \frac{(100 \times 50.000) + (50 \times 56.000)}{100 + 50} = \frac{5.000.000 + 2.800.000}{150} = 52.000\ \text{đ}
+\]
+Script kiểm tra:
+\begin{lstlisting}
+SELECT sku_id, branch_id, avg_cost
+FROM stock_balances
+WHERE sku_id = :sku_id AND branch_id = :branch_id;
+-- Ket qua ky vong: avg_cost = 52000.0000
+\end{lstlisting}
+
+\subsection{Mô phỏng Concurrency (kịch bản Flash Sale)}
+\label{sec:concurrency-test}
+Để kiểm chứng cơ chế ở mục~\ref{sec:concurrency-control} tại mức thiết kế (chưa có Backend để test tải qua API thật), nhóm mở nhiều phiên \texttt{psql} song song, mỗi phiên mô phỏng một request Reserve trên cùng một SKU chỉ còn 1 đơn vị tồn:
+
+\begin{lstlisting}
+-- Phien A (chay truoc, giu khoa):
+BEGIN;
+SELECT on_hand, reserved FROM stock_balances
+WHERE sku_id = 'sku-flash-sale' FOR UPDATE;
+-- (chua COMMIT, giu khoa)
+
+-- Phien B (chay dong thoi, cung SKU):
+BEGIN;
+SELECT on_hand, reserved FROM stock_balances
+WHERE sku_id = 'sku-flash-sale' FOR UPDATE;
+-- Phien B bi BLOCK (phai cho) cho toi khi Phien A COMMIT/ROLLBACK
+\end{lstlisting}
+
+\textbf{Quan sát kỳ vọng:} Phiên B phải ở trạng thái chờ (block) cho đến khi Phiên A thực hiện \texttt{COMMIT} hoặc \texttt{ROLLBACK} — xác nhận PostgreSQL tuần tự hóa đúng 2 giao dịch tranh chấp trên cùng 1 dòng, không có hiện tượng 2 giao dịch cùng đọc được \texttt{reserved} cũ và cùng ghi đè (lost update).
+
+\subsection{Kết quả kiểm thử}
+
+\begin{table}[htbp]
+    \centering
+    \small
+    \caption{Tổng hợp kết quả kiểm thử mức Database}
+    \begin{tabularx}{\textwidth}{|Y|p{2.2cm}|p{1.6cm}|p{1.6cm}|Y|}
+        \hline
+        \textbf{Hạng mục kiểm thử} & \textbf{Số test case} & \textbf{Pass} & \textbf{Fail} & \textbf{Ghi chú} \\
+        \hline
+        Schema Validation (DDL chạy sạch trên container mới) & -- & -- & -- & Điền số liệu thực tế sau khi chạy \\
+        \hline
+        Append-only Constraint (mục 4.3.2) & -- & -- & -- & \\
+        \hline
+        Toàn vẹn Ledger $\leftrightarrow$ StockBalance (mục 4.3.3) & -- & -- & -- & \\
+        \hline
+        Công thức giá vốn bình quân (mục 4.3.4) & -- & -- & -- & So sánh với 52.000đ tính tay \\
+        \hline
+        Ràng buộc available không âm (CHECK constraint) & -- & -- & -- & \\
+        \hline
+        Cô lập dữ liệu đa tenant & -- & -- & -- & \\
+        \hline
+        Concurrency simulation (mục 4.3.5) & -- & -- & -- & Quan sát hành vi khóa, không đo throughput \\
+        \hline
+    \end{tabularx}
+\end{table}
+
+\textit{Ghi chú: Bảng trên để trống cột số liệu — nhóm điền kết quả thật sau khi chạy xong toàn bộ script kiểm thử trên môi trường Docker PostgreSQL, đính kèm chi tiết đầy đủ tại file kết quả kiểm thử theo quy ước bàn giao ở Chương~2.}
+
+\subsection{Lỗi phát hiện và hướng xử lý}
+Các lỗi phát hiện trong quá trình kiểm thử schema/dữ liệu được ghi nhận trên GitLab Issues theo mức độ ưu tiên (Critical/High/Medium/Low), tuân theo quy trình Quản lý chất lượng đã mô tả ở Chương~2. Lỗi liên quan đến ràng buộc append-only hoặc công thức giá vốn được xếp mức Critical vì ảnh hưởng trực tiếp đến tính đúng đắn của toàn bộ hệ thống, ưu tiên xử lý trong vòng 24 giờ.

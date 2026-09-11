@@ -1,0 +1,39 @@
+\section{Phương pháp Quản lý}
+\subsection{Quy trình dự án}
+Nhóm áp dụng mô hình \textbf{Phát triển lặp và tăng trưởng (Iterative and Incremental Development)}, chia thành 5 giai đoạn tương ứng 5 tuần, mỗi giai đoạn có sản phẩm đầu ra rõ ràng, hỗ trợ review chéo giữa các thành viên trước khi chuyển giai đoạn tiếp theo.
+
+Lý do lựa chọn mô hình này:
+\begin{itemize}
+    \item Thiết kế dữ liệu (ERD, DDL) phải hoàn thành trước và đúng, vì mọi công việc còn lại (Class Diagram, seed data, script kiểm tra) đều phụ thuộc vào nó.
+    \item Cho phép phát hiện sớm các lỗi thiết kế nghiệp vụ (ví dụ: công thức giá vốn, cơ chế locking) trước khi lan sang các tài liệu khác.
+    \item Dễ tích hợp phản hồi của GVHD sau mỗi buổi báo cáo tiến độ hằng tuần.
+\end{itemize}
+
+\subsection{Quản lý chất lượng}
+\textbf{Phòng ngừa lỗi:} Mọi thiết kế trọng yếu (ERD, cơ chế Anti-Oversell) phải được ít nhất một thành viên khác review trước khi đưa vào tài liệu chính thức.
+
+\textbf{Review:} TV4 (QA \& Documentation Lead) chịu trách nhiệm rà soát tính nhất quán giữa các tài liệu (SRS, ERD, DDL, RTM) mỗi tuần.
+
+\textbf{Kiểm thử thiết kế:} Vì không có Backend thật, "kiểm thử" trong phạm vi đồ án là kiểm thử ở mức Database — chạy thử script DDL, seed data, và script kiểm tra toàn vẹn dữ liệu (đối chiếu Ledger với StockBalance, kiểm chứng công thức giá vốn bình quân bằng dữ liệu mẫu thực tế).
+
+\subsection{Kế hoạch onboard công nghệ}
+Do các thành viên đã có nền tảng từ các học phần trước, thời gian onboard được rút gọn còn 2 ngày đầu Tuần 1.
+
+\begin{table}[htbp]
+    \centering
+    \small
+    \caption{Kế hoạch onboard công cụ/công nghệ}
+    \begin{tabular}{|p{4cm}|p{3cm}|p{2.5cm}|p{2.5cm}|}
+        \hline
+        \textbf{Nội dung} & \textbf{Thành viên tham gia} & \textbf{Thời gian} & \textbf{Yêu cầu} \\
+        \hline
+        PostgreSQL nâng cao (trigger, rule, locking) & TV1, TV2 & Ngày 1 & Bắt buộc \\
+        \hline
+        Công cụ vẽ ERD/UML (dbdiagram.io, draw.io) & TV1, TV3 & Ngày 1 & Bắt buộc \\
+        \hline
+        Git/GitLab: Issues, Milestones, Board & Toàn bộ thành viên & Ngày 1 & Bắt buộc \\
+        \hline
+        Chuẩn viết SRS/RTM (IEEE~830 rút gọn) & TV4 & Ngày 2 & Bắt buộc \\
+        \hline
+    \end{tabular}
+\end{table}

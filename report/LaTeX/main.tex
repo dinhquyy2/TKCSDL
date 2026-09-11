@@ -1,0 +1,120 @@
+\documentclass[a4paper,12pt]{book}
+\usepackage[a4paper,left=1.2cm,right=1.2cm,top=2cm,bottom=2cm]{geometry}
+\usepackage{fontspec}
+\usepackage{graphicx}
+\usepackage{amssymb} % provides \checkmark
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning}
+\usepackage{float}
+\usepackage[section]{placeins}
+\usepackage{microtype}
+\usepackage{longtable}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{ragged2e}
+\usepackage[unicode]{hyperref}
+\usepackage{bookmark}
+\usepackage[titles]{tocloft}
+\usepackage[main=vietnamese,english]{babel}
+\usepackage{xcolor}
+\usepackage{listings}
+
+% SQL code listing style (used in Chapter 4 — Database-centric content)
+\definecolor{sqlkeyword}{RGB}{0,80,170}
+\definecolor{sqlcomment}{RGB}{95,115,95}
+\definecolor{sqlstring}{RGB}{160,30,30}
+\definecolor{codebg}{RGB}{247,247,250}
+\lstdefinelanguage{SQLplus}{
+    language=SQL,
+    morekeywords={UUID, JSONB, TIMESTAMPTZ, NUMERIC, VARCHAR, BOOLEAN, TEXT,
+        REFERENCES, RETURNS, TRIGGER, LANGUAGE, PLPGSQL, RAISE, EXCEPTION,
+        BEFORE, EXECUTE, FUNCTION, ROW, FOR, EACH, IF, THEN, END, BEGIN,
+        EXTENSION, CHECK, DEFAULT, PRIMARY, KEY, UNIQUE, CONSTRAINT},
+}
+\lstset{
+    language=SQLplus,
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{sqlkeyword}\bfseries,
+    commentstyle=\color{sqlcomment}\itshape,
+    stringstyle=\color{sqlstring},
+    backgroundcolor=\color{codebg},
+    frame=single,
+    rulecolor=\color{black!25},
+    numbers=none,
+    breaklines=true,
+    showstringspaces=false,
+    tabsize=2,
+    xleftmargin=4pt,
+    xrightmargin=4pt,
+    framextopmargin=4pt,
+    framexbottommargin=4pt,
+}
+
+\renewcommand{\contentsname}{Mục lục}
+\renewcommand{\listfigurename}{Danh sách hình vẽ}
+\renewcommand{\listtablename}{Danh sách bảng}
+\renewcommand{\cftchapfont}{\bfseries}
+\renewcommand{\cftchappagefont}{\bfseries}
+\setlength{\cftbeforechapskip}{5pt}
+\setlength{\cftbeforesecskip}{2pt}
+\setlength{\cftbeforefigskip}{2pt}
+\setlength{\cftbeforetabskip}{2pt}
+
+% Use XeLaTeX for Unicode fonts
+\defaultfontfeatures{Ligatures=TeX}
+% Times New Roman / Arial when available (Windows, Overleaf); fall back to the
+% metric-compatible Liberation Serif/Sans on Linux/CI where MS fonts are absent.
+\IfFontExistsTF{Times New Roman}{\setmainfont{Times New Roman}}{\setmainfont{Liberation Serif}}
+\IfFontExistsTF{Arial}{\setsansfont{Arial}}{\setsansfont{Liberation Sans}}
+
+\setcounter{tocdepth}{2}
+\setcounter{secnumdepth}{3}
+
+\setlength{\emergencystretch}{2em}
+\setlength{\tabcolsep}{2pt}
+\setlength{\LTleft}{0pt}
+\setlength{\LTright}{0pt}
+\setlength{\arrayrulewidth}{0.4pt}
+\renewcommand{\arraystretch}{1.15}
+\AtBeginEnvironment{longtable}{\footnotesize\RaggedRight\arraybackslash}
+\AtBeginEnvironment{tabular}{\footnotesize\RaggedRight\arraybackslash}
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+
+% Callout box style used to mark "insert image here" placeholders
+\usepackage[most]{tcolorbox}
+\newtcolorbox{imgnote}{
+    colback=yellow!10, colframe=orange!70!black, boxrule=0.6pt,
+    left=6pt, right=6pt, top=3pt, bottom=3pt, arc=1pt,
+    fontupper=\small\itshape
+}
+
+\begin{document}
+\sloppy
+\frontmatter
+\title{Báo cáo Đồ án Tốt nghiệp}
+\author{Nhóm thực hiện: Omnichannel Inventory and Sales Management System (OISM)}
+\date{\today}
+\maketitle
+
+\tableofcontents
+\clearpage
+\listoffigures
+\addcontentsline{toc}{chapter}{Danh sách hình vẽ}
+\clearpage
+\listoftables
+\addcontentsline{toc}{chapter}{Danh sách bảng}
+\clearpage
+
+\mainmatter
+
+% Include five chapter files (one per team member)
+\input{chapters/chapter1}
+\input{chapters/chapter2}
+\input{chapters/chapter3}
+\input{chapters/chapter4}
+\input{chapters/chapter5}
+
+\clearpage
+\bibliographystyle{plain}
+\bibliography{bib/references}
+\end{document}

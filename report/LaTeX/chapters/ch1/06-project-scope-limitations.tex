@@ -1,0 +1,54 @@
+\section{Phạm vi và giới hạn của dự án}
+\label{sec:scope-limitations}
+
+\subsection{Các tính năng chính (theo thiết kế đầy đủ của hệ thống)}
+
+\subsubsection{Tính năng dành cho Owner (Chủ cửa hàng)}
+\begin{itemize}
+    \item \textbf{FE-01:} Đăng ký Tenant mới, quản lý chi nhánh/kho hàng.
+    \item \textbf{FE-02:} Quản lý người dùng và phân quyền (Owner/Staff/Cashier).
+    \item \textbf{FE-03:} Quản lý danh mục, thương hiệu, sản phẩm/biến thể (SKU), giá bán.
+    \item \textbf{FE-04:} Xem toàn bộ báo cáo doanh thu, giá vốn, lợi nhuận gộp.
+\end{itemize}
+
+\subsubsection{Tính năng dành cho Staff (Nhân viên quản lý kho/đơn hàng)}
+\begin{itemize}
+    \item \textbf{FE-01:} Quản lý phiếu nhập hàng (Purchase Receipt) và giá vốn bình quân.
+    \item \textbf{FE-02:} Quản lý chuyển kho giữa các chi nhánh (2 bước xuất/nhập).
+    \item \textbf{FE-03:} Quản lý phiên kiểm kho (Stocktake) và bút toán điều chỉnh.
+    \item \textbf{FE-04:} Xử lý đơn hàng: duyệt, in phiếu giao hàng, hủy đơn.
+\end{itemize}
+
+\subsubsection{Tính năng dành cho Cashier (Thu ngân tại quầy — POS)}
+\begin{itemize}
+    \item \textbf{FE-01:} Tìm kiếm sản phẩm nhanh theo Tên/SKU/Barcode.
+    \item \textbf{FE-02:} Kiểm tra tồn khả dụng tức thời, chặn bán vượt tồn.
+    \item \textbf{FE-03:} Thanh toán (tiền mặt/QR) và in hóa đơn.
+    \item \textbf{FE-04:} Thực hiện checkout nhanh (Reserve → Confirm → Deduct trong 1 giao dịch atomic).
+\end{itemize}
+
+\subsubsection{Tính năng hệ thống (chạy nền/tích hợp)}
+\begin{itemize}
+    \item \textbf{FE-01:} Webhook Simulator mô phỏng đơn hàng từ Shopee/TikTok Shop/Lazada.
+    \item \textbf{FE-02:} Thông báo real-time (SignalR) cho đơn hàng mới.
+    \item \textbf{FE-03:} Tự động hủy đơn Reserved quá hạn, tổng hợp báo cáo hằng ngày (Hangfire).
+    \item \textbf{FE-04:} Cảnh báo tồn kho thấp khi available chạm ngưỡng tối thiểu.
+\end{itemize}
+
+\subsection{Phạm vi bàn giao thực tế của nhóm trong học kỳ này}
+
+Dự án OISM có quy mô kỹ thuật lớn, bao trùm cả Backend API (.NET~8), Frontend (Admin Dashboard + POS PWA bằng ReactJS), tích hợp AI dự báo nhập hàng và triển khai CI/CD. Do giới hạn thời gian và nguồn lực của học kỳ, nhóm quyết định thu hẹp phạm vi bàn giao thực tế xuống còn hai hạng mục cốt lõi, làm nền tảng vững chắc cho các học kỳ/giai đoạn phát triển tiếp theo:
+
+\begin{enumerate}
+    \item \textbf{Thiết kế hệ thống toàn diện:} SRS đầy đủ (yêu cầu chức năng, phi chức năng), kiến trúc Clean Architecture, ERD, UML Class Diagram, Sequence Diagram cho các luồng nghiệp vụ trọng yếu, đặc tả API (Swagger/Postman).
+    \item \textbf{Cơ sở dữ liệu:} Script DDL PostgreSQL đầy đủ, cơ chế ràng buộc append-only cho sổ cái tồn kho, index tối ưu, dữ liệu mẫu (seed data) minh họa, và script kiểm tra tính toàn vẹn dữ liệu.
+\end{enumerate}
+
+\textbf{Không nằm trong phạm vi bàn giao của học kỳ này:} Lập trình Backend API (.NET), lập trình Frontend (Admin Dashboard, POS PWA), tích hợp AI dự báo nhập hàng, tích hợp SignalR/Hangfire thực tế, CI/CD, và triển khai (deploy) hệ thống hoàn chỉnh lên môi trường production.
+
+\subsection{Hạn chế và loại trừ}
+\begin{itemize}
+    \item \textbf{LI-1: Chưa có phần mềm chạy được đầu-cuối (end-to-end):} Vì Backend/Frontend chưa được lập trình, các chức năng ở mục 1.6.1 chỉ tồn tại ở dạng đặc tả thiết kế, chưa thể demo trực tiếp trên giao diện.
+    \item \textbf{LI-2: Webhook Simulator và tích hợp sàn TMĐT thật:} Trong phạm vi đồ án, các sàn Shopee/TikTok Shop/Lazada chỉ được mô phỏng qua thiết kế Webhook Simulator, không kết nối API thật của các sàn.
+    \item \textbf{LI-3: Kiểm thử concurrency (NFR-PERF-02):} Do chưa có Backend thật, kịch bản 50 đơn hàng đồng thời tranh 1 SKU chỉ được kiểm chứng ở mức thiết kế (script SQL mô phỏng transaction/locking), chưa đo lường được trên hệ thống chạy thật.
+\end{itemize}

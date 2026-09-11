@@ -1,0 +1,113 @@
+\section{User Requirements}
+
+\subsection{Actors}
+
+\begin{longtable}{|p{0.6cm}|p{3.1cm}|p{8.4cm}|}
+    \hline
+    \textbf{\#} & \textbf{Actor} & \textbf{Mô tả} \\
+    \hline
+    \endfirsthead
+    \hline
+    \textbf{\#} & \textbf{Actor} & \textbf{Mô tả} \\
+    \hline
+    \endhead
+    1 & Owner (Chủ cửa hàng) & Quản trị viên cao nhất của Tenant: quản lý chi nhánh, người dùng, sản phẩm, xem mọi báo cáo tài chính. \\
+    \hline
+    2 & Staff (Nhân viên quản lý kho/đơn hàng) & Xử lý nhập hàng, chuyển kho, kiểm kho và duyệt/hủy đơn hàng. \\
+    \hline
+    3 & Cashier (Thu ngân) & Bán hàng tại quầy qua giao diện POS, thanh toán và in hóa đơn. \\
+    \hline
+    4 & Kênh TMĐT (Webhook Simulator) & Actor bên ngoài (được mô phỏng), đại diện Shopee/TikTok Shop/Lazada gửi đơn hàng vào hệ thống. \\
+    \hline
+    5 & Hệ thống (Background Job) & Actor tự động: tính giá vốn bình quân, chống bán vượt tồn, hủy đơn quá hạn, gửi cảnh báo tồn thấp. \\
+    \hline
+    \caption{Danh sách Actor của hệ thống}
+    \label{tab:actors}
+\end{longtable}
+
+\subsection{Use Cases}
+
+\subsubsection{Diagram(s)}
+
+Toàn bộ actor và use case liên quan được tổng hợp trong một sơ đồ Use Case duy nhất, thể hiện quan hệ giữa 5 actor và các nhóm chức năng chính của hệ thống.
+
+\begin{figure}[H]
+    \centering
+    \fbox{\parbox{0.9\textwidth}{\centering\vspace{4cm}\textit{[Chèn hình tại đây]}\vspace{4cm}}}
+    \caption{Sơ đồ Use Case tổng quát của hệ thống}
+    \label{fig:usecase-diagram}
+\end{figure}
+\begin{imgnote}
+📌 Hình 2 — Cần bổ sung hình: \texttt{Hinh\_02\_UseCaseDiagram.png} — Use Case Diagram thể hiện các use case chính của Owner/Staff/Cashier và 2 actor hệ thống.
+\end{imgnote}
+
+\subsubsection{Descriptions}
+
+\begin{longtable}{|p{1.2cm}|p{4.2cm}|p{3.3cm}|p{8.9cm}|}
+    \hline
+    \textbf{ID} & \textbf{Use Case} & \textbf{Actor} & \textbf{Mô tả} \\
+    \hline
+    \endfirsthead
+    \hline
+    \textbf{ID} & \textbf{Use Case} & \textbf{Actor} & \textbf{Mô tả} \\
+    \hline
+    \endhead
+    UC01 & Đăng nhập / Đăng xuất & Owner, Staff, Cashier & Xác thực qua Email/Phone + Password, nhận JWT chứa TenantId/UserId/Role \\
+    \hline
+    UC02 & Đăng ký Tenant mới & Owner & Tạo không gian dữ liệu cô lập cho cửa hàng mới \\
+    \hline
+    UC03 & Quản lý chi nhánh/kho & Owner & Tạo, cập nhật, bật/tắt hiển thị chi nhánh và kho hàng \\
+    \hline
+    UC04 & Quản lý người dùng \& phân quyền & Owner & Cấu hình vai trò Owner/Staff/Cashier cho từng tài khoản \\
+    \hline
+    UC05 & Quản lý danh mục \& thương hiệu & Owner & Quản lý Category/Brand phân cấp \\
+    \hline
+    UC06 & Quản lý sản phẩm \& biến thể (SKU) & Owner & Tạo sản phẩm đơn giản/có biến thể, gán SKU duy nhất \\
+    \hline
+    UC07 & Quản lý mã vạch (Barcode) & Owner & Sinh tự động hoặc nhập tay mã vạch theo SKU \\
+    \hline
+    UC08 & Thiết lập giá bán & Owner & Cấu hình giá bán lẻ/bán sỉ, tách biệt giá vốn \\
+    \hline
+    UC09 & Xem sổ cái tồn kho (Ledger) & Owner, Staff & Truy vấn lịch sử biến động tồn kho (chỉ đọc) \\
+    \hline
+    UC10 & Tạo \& xác nhận phiếu nhập hàng & Staff & Ghi nhận nhập hàng, kích hoạt tính lại giá vốn bình quân \\
+    \hline
+    UC11 & Tạo phiếu chuyển kho & Staff & Chuyển kho 2 bước: xuất tạm (outbound) → xác nhận nhập (inbound) \\
+    \hline
+    UC12 & Tạo phiên kiểm kho & Staff & Ghi nhận số đếm thực tế, so sánh với hệ thống \\
+    \hline
+    UC13 & Xử lý bút toán điều chỉnh tồn kho & Staff & Sinh Adjustment Ledger khi có chênh lệch kiểm kho \\
+    \hline
+    UC14 & Xử lý đơn hàng (duyệt/hủy) & Staff & Xem đơn chờ xử lý, duyệt, in phiếu giao hàng hoặc hủy đơn \\
+    \hline
+    UC15 & Tìm sản phẩm nhanh (Tên/SKU/Barcode) & Cashier & Giao diện POS tối ưu tốc độ tìm kiếm \\
+    \hline
+    UC16 & Thanh toán tại quầy & Cashier & Thanh toán tiền mặt/QR, in hóa đơn qua Browser Print API \\
+    \hline
+    UC17 & Checkout nhanh (atomic) & Cashier & Reserve → Confirm → Deduct trong một giao dịch cơ sở dữ liệu \\
+    \hline
+    UC18 & Xem báo cáo doanh thu \& lợi nhuận gộp & Owner & Lọc theo thời gian, chi nhánh, kênh, SKU \\
+    \hline
+    UC19 & Xem báo cáo tồn kho \& tốc độ bán & Owner, Staff & Theo dõi giá trị tồn kho, sản phẩm bán chạy/tồn đọng \\
+    \hline
+    UC20 & Nhận cảnh báo tồn kho thấp & Owner, Staff & Thông báo dashboard khi available ≤ ngưỡng tối thiểu \\
+    \hline
+    UC21 & Gửi đơn hàng mô phỏng (Webhook) & Kênh TMĐT & Gửi payload giả lập từ Shopee/TikTok/Lazada để kiểm thử throughput \\
+    \hline
+    UC22 & Chuẩn hóa đơn hàng đa kênh & Hệ thống & Chuyển đổi đơn hàng từ mọi kênh về Canonical Order Model \\
+    \hline
+    UC23 & Giữ chỗ tồn kho (Reserve) & Hệ thống & Tăng reserved khi đơn online vào hub, từ chối nếu không đủ available \\
+    \hline
+    UC24 & Trừ/giải phóng tồn kho (Deduct/Release) & Hệ thống & Trừ on\_hand khi Confirmed, giải phóng reserved khi Cancelled \\
+    \hline
+    UC25 & Tính giá vốn bình quân gia quyền & Hệ thống & Tự động tính lại khi xác nhận phiếu nhập \\
+    \hline
+    UC26 & Snapshot giá vốn vào đơn hàng & Hệ thống & Chốt AvgCost vào OrderItem.CostPrice khi đơn Confirmed \\
+    \hline
+    UC27 & Đẩy thông báo real-time & Hệ thống & SignalR đẩy cảnh báo đơn hàng mới đến Admin/POS \\
+    \hline
+    UC28 & Tự hủy đơn Reserved quá hạn & Hệ thống & Background job (Hangfire) tự động hủy và giải phóng tồn \\
+    \hline
+    \caption{Danh sách và mô tả Use Case}
+    \label{tab:usecases}
+\end{longtable}

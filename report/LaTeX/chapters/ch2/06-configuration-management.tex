@@ -1,0 +1,35 @@
+\section{Quản lý Cấu hình}
+
+\subsection{Quản lý tài liệu}
+Công cụ tài liệu: LaTeX (báo cáo), draw.io/dbdiagram.io (ERD, UML), Google Docs/Sheets cho biên bản họp.\\
+Lưu trữ và quản lý file: Google Drive (bản nháp) và GitLab repo (bản chính thức, có version).
+
+\subsection{Quản lý mã nguồn \& tài liệu thiết kế}
+Toàn bộ script SQL (DDL, seed data, script kiểm tra toàn vẹn) và tài liệu thiết kế (SRS, Data Dictionary) được quản lý bằng Git trên GitLab, tuân theo quy ước nhánh: \texttt{main}, \texttt{feature/erd}, \texttt{feature/ddl-schema}, \texttt{feature/seed-data}, \texttt{report}. Mỗi thay đổi schema quan trọng được tạo thành một Merge Request riêng để TV4 review trước khi merge vào \texttt{main}.
+
+Nhóm áp dụng quy trình làm việc Git cơ bản: mỗi thành viên làm việc trên nhánh riêng, dùng \texttt{git add}/\texttt{git commit}/\texttt{git push} để cập nhật, và \texttt{git pull} trước khi bắt đầu công việc mới để tránh xung đột (conflict). Tiến độ dự án được theo dõi qua GitLab Issues, Milestones và Issue Board (kéo-thả theo trạng thái To~Do/Doing/Done).
+
+\subsection{Công cụ và hạ tầng}
+\begin{table}[htbp]
+    \centering
+    \small
+    \caption{Công cụ và hạ tầng sử dụng trong dự án}
+    \begin{tabular}{|p{3.5cm}|p{9cm}|}
+        \hline
+        \textbf{Hạng mục} & \textbf{Công cụ / Hạ tầng} \\
+        \hline
+        Cơ sở dữ liệu & PostgreSQL 15+ (chạy qua Docker) \\
+        \hline
+        Vẽ ERD/UML & dbdiagram.io, draw.io \\
+        \hline
+        Đặc tả API & Swagger Editor / Postman \\
+        \hline
+        Quản lý mã nguồn \& tài liệu & GitLab (repo, Issues, Milestones, Board) \\
+        \hline
+        Soạn thảo tài liệu & Microsoft Word, LaTeX (báo cáo cuối kỳ) \\
+        \hline
+        Quản lý dự án & GitLab Board, Google Sheet (theo dõi WBS) \\
+        \hline
+    \end{tabular}
+\end{table}
+
