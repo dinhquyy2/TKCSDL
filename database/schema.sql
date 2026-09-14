@@ -178,3 +178,8 @@ CREATE TABLE stock_transfer_items (
     sku_id UNIQUEIDENTIFIER NOT NULL FOREIGN KEY REFERENCES sku_variants(sku_id),
     quantity INT NOT NULL
 );
+-- Tối ưu lọc dữ liệu theo Tenant và Thời gian tạo (Ví dụ trên bảng orders)
+CREATE INDEX idx_orders_tenant_created ON orders(tenant_id, created_at);
+
+-- Tối ưu truy vấn Tồn kho theo Chi nhánh (Branch/Tenant) và Sản phẩm (SKU)
+CREATE INDEX idx_stock_branch_sku ON stock_balances(branch_id, sku_id);
