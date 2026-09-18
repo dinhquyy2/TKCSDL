@@ -252,13 +252,10 @@ Bảng dưới đây liệt kê các màn hình dự kiến của hệ thống h
 
 \begin{figure}[H]
     \centering
-    \fbox{\parbox{0.85\textwidth}{\centering\vspace{3.5cm}\textit{[Chèn hình tại đây]}\vspace{3.5cm}}}
+    \includegraphics[width=0.96\textwidth]{../docs/Sequence/3.5.png}
     \caption{Sequence Diagram — luồng nhập hàng \& tính giá vốn bình quân}
     \label{fig:seq-purchase-receipt}
 \end{figure}
-\begin{imgnote}
-📌 Hình 7 — Cần bổ sung hình: \texttt{Hinh\_07\_Sequence\_PurchaseReceipt.png} — PurchaseReceipt → tính AvgCost → cập nhật StockBalance → ghi Ledger IN.
-\end{imgnote}
 
 \subsubsection{Chuyển kho (Stock Transfer Management)}
 \textbf{Actor:} Staff \\
@@ -278,13 +275,10 @@ Bảng dưới đây liệt kê các màn hình dự kiến của hệ thống h
 
 \begin{figure}[H]
     \centering
-    \fbox{\parbox{0.85\textwidth}{\centering\vspace{3.5cm}\textit{[Chèn hình tại đây]}\vspace{3.5cm}}}
+    \includegraphics[width=0.96\textwidth]{../docs/Sequence/3.6.png}
     \caption{Sequence Diagram — luồng chuyển kho 2 bước (Outbound/Inbound)}
     \label{fig:seq-stock-transfer}
 \end{figure}
-\begin{imgnote}
-📌 Hình 8 — Cần bổ sung hình: \texttt{Hinh\_08\_Sequence\_StockTransfer.png} — 2 bước Outbound/Inbound giữa 2 chi nhánh.
-\end{imgnote}
 
 \subsubsection{Kiểm kho (Stocktake Management)}
 \textbf{Actor:} Staff \\
@@ -303,13 +297,10 @@ Bảng dưới đây liệt kê các màn hình dự kiến của hệ thống h
 
 \begin{figure}[H]
     \centering
-    \fbox{\parbox{0.85\textwidth}{\centering\vspace{3.5cm}\textit{[Chèn hình tại đây]}\vspace{3.5cm}}}
+    \includegraphics[width=0.96\textwidth]{../docs/Sequence/3.7.png}
     \caption{Sequence Diagram — luồng kiểm kho \& sinh bút toán điều chỉnh}
     \label{fig:seq-stocktake}
 \end{figure}
-\begin{imgnote}
-📌 Hình 9 — Cần bổ sung hình: \texttt{Hinh\_09\_Sequence\_Stocktake.png} — tạo phiên kiểm kho → so sánh → sinh bút toán Adjustment.
-\end{imgnote}
 \FloatBarrier
 
 \subsection{FR-COST: Tính giá vốn bình quân gia quyền (Weighted Average Cost Calculation)}
@@ -363,13 +354,10 @@ Bảng dưới đây liệt kê các màn hình dự kiến của hệ thống h
 
 \begin{figure}[H]
     \centering
-    \fbox{\parbox{0.85\textwidth}{\centering\vspace{3.5cm}\textit{[Chèn hình tại đây]}\vspace{3.5cm}}}
+    \includegraphics[width=0.96\textwidth]{../docs/Sequence/3.8.png}
     \caption{State Diagram — vòng đời đơn hàng (Order State Machine)}
     \label{fig:state-order-lifecycle}
 \end{figure}
-\begin{imgnote}
-📌 Hình 10 — Cần bổ sung hình: \texttt{Hinh\_10\_StateDiagram\_OrderLifecycle.png} — toàn bộ trạng thái và điều kiện chuyển trạng thái hợp lệ của Order.
-\end{imgnote}
 
 \subsubsection{Chuẩn hóa đơn hàng đa kênh \& Xử lý đơn}
 \textbf{Actor:} Kênh TMĐT (Webhook), Staff \\
@@ -409,13 +397,10 @@ Bảng dưới đây liệt kê các màn hình dự kiến của hệ thống h
 
 \begin{figure}[H]
     \centering
-    \fbox{\parbox{0.85\textwidth}{\centering\vspace{3.5cm}\textit{[Chèn hình tại đây]}\vspace{3.5cm}}}
+    \includegraphics[width=0.96\textwidth]{../docs/Sequence/3.9.png}
     \caption{Sequence Diagram — luồng giữ chỗ tồn kho (Stock Reservation)}
     \label{fig:seq-stock-reservation}
 \end{figure}
-\begin{imgnote}
-📌 Hình 5 — Cần bổ sung hình: \texttt{Hinh\_05\_Sequence\_StockReservation.png} — Order Hub → StockBalance (lock) → Ledger, thể hiện nhánh reject khi thiếu tồn.
-\end{imgnote}
 
 \subsection{FR-POS: Bán hàng tại quầy — PWA POS (Counter Sales)}
 
@@ -438,13 +423,10 @@ Bảng dưới đây liệt kê các màn hình dự kiến của hệ thống h
 
 \begin{figure}[H]
     \centering
-    \fbox{\parbox{0.85\textwidth}{\centering\vspace{3.5cm}\textit{[Chèn hình tại đây]}\vspace{3.5cm}}}
+    \includegraphics[width=0.96\textwidth]{../docs/Sequence/4.0.png}
     \caption{Sequence Diagram — luồng thanh toán nhanh tại POS (Fast Checkout)}
     \label{fig:seq-fast-checkout}
 \end{figure}
-\begin{imgnote}
-📌 Hình 6 — Cần bổ sung hình: \texttt{Hinh\_06\_Sequence\_FastCheckout.png} — POS → Order → StockBalance → Ledger trong 1 transaction, kèm nhánh rollback.
-\end{imgnote}
 
 \subsubsection{Các chức năng còn lại của nhóm FR-POS}
 
