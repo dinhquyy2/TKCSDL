@@ -1,0 +1,365 @@
+\section{Thiết kế Logic và Vật lý Cơ sở dữ liệu}
+
+Đây là nội dung trọng tâm của đồ án. Mục này chứng minh tính đúng đắn của thiết kế CSDL ở \textbf{cả hai tầng}: tầng Logic (phụ thuộc hàm, candidate key, chuẩn hóa, phân rã bảo toàn nối) và tầng Vật lý (schema SQL Server thật, cơ chế toàn vẹn dữ liệu, chiến lược hiệu năng và vận hành).
+
+\subsection{Danh mục thực thể (Entity Catalog)}
+Toàn bộ 20 thực thể được thiết kế từ ERD (Chương 3, mục 3.2.1.5) được triển khai thành bảng vật lý trong SQL Server. Mọi thực thể (trừ Tenant) đều có khóa ngoại TenantId để đảm bảo cô lập dữ liệu đa khách thuê.
+
+\begin{longtable}{|p{3.4cm}|p{5.5cm}|p{5cm}|}
+    \hline
+    \textbf{Thực thể} & \textbf{Mô tả} & \textbf{Thuộc tính chính (rút gọn)} \\
+    \hline
+    \endfirsthead
+    \hline
+    \textbf{Thực thể} & \textbf{Mô tả} & \textbf{Thuộc tính chính (rút gọn)} \\
+    \hline
+    \endhead
+    Tenant & Đại diện một cửa hàng/doanh nghiệp thuê hệ thống & TenantId (PK), Name, Domain, Status \\
+    \hline
+    Branch & Chi nhánh/kho hàng thuộc một Tenant & BranchId (PK), TenantId (FK), Name, Address \\
+    \hline
+    User & Tài khoản người dùng thuộc một Tenant & UserId (PK), TenantId (FK), Username, Email, Role \\
+    \hline
+    Partner & Nhà cung cấp/khách hàng & PartnerId (PK), TenantId (FK), Type, Name \\
+    \hline
+    SalesChannel & Kênh bán (POS/Shopee/TikTok/Lazada) & ChannelId (PK), TenantId (FK), Code, Type \\
+    \hline
+    ProductCategory & Danh mục sản phẩm, phân cấp cha-con & CategoryId (PK), TenantId (FK), ParentId \\
+    \hline
+    Brand & Thương hiệu sản phẩm & BrandId (PK), TenantId (FK), Name \\
+    \hline
+    Product & Sản phẩm gốc, có thể có nhiều biến thể & ProductId (PK), TenantId, CategoryId, BrandId \\
+    \hline
+    SKUVariant & Biến thể cụ thể, đơn vị quản lý tồn kho & SKUId (PK), TenantId, SKUCode (unique/Tenant), Price \\
+    \hline
+    Barcode & Mã vạch gắn với một SKU & BarcodeId (PK), TenantId, SKUId (FK), Code (unique) \\
+    \hline
+    StockBalance (Ledger read model) & Số dư tồn kho hiện tại theo SKU/Branch & (BranchId, SKUId) PK phức hợp, OnHand, Reserved, AvgCost \\
+    \hline
+    InventoryTransaction (Ledger) & Sổ cái tồn kho append-only & TransactionId (PK), TenantId, Type, Quantity, BalanceAfter \\
+    \hline
+    Stocktake & Phiên kiểm kho & StocktakeId (PK), TenantId, BranchId, Status \\
+    \hline
+    StocktakeItem & Chi tiết số đếm thực tế theo SKU & StocktakeItemId (PK), CountedQty, SystemQty, VarianceQty (computed) \\
+    \hline
+    Order & Đơn hàng hợp nhất từ mọi kênh & OrderId (PK), TenantId, ChannelId (FK), Status \\
+    \hline
+    OrderItem & Chi tiết dòng sản phẩm, snapshot giá vốn & OrderItemId (PK), SKUId, CostPrice, Subtotal (computed) \\
+    \hline
+    PurchaseReceipt & Phiếu nhập hàng & ReceiptId (PK), TenantId, BranchId, SupplierId, Status \\
+    \hline
+    PurchaseReceiptItem & Chi tiết dòng hàng trong phiếu nhập & ReceiptItemId (PK), SKUId, Quantity, UnitCost \\
+    \hline
+    StockTransfer & Phiếu chuyển kho giữa 2 chi nhánh & TransferId (PK), FromBranchId, ToBranchId, Status \\
+    \hline
+    StockTransferItem & Chi tiết dòng SKU chuyển kho & TransferItemId (PK), TransferId, SKUId, Quantity \\
+    \hline
+    \caption{Danh mục 20 thực thể triển khai trong schema SQL Server}
+    \label{tab:entity-catalog}
+\end{longtable}
+
+\subsection{Chứng minh Thiết kế Logic (Logical Design Correctness)}
+\label{sec:logical-design}
+
+Trước khi trình bày DDL, mục này chứng minh tính đúng đắn của mô hình dữ liệu ở tầng logic — độc lập với SQL Server — theo đúng 5 tiêu chí: phụ thuộc hàm, candidate key, chuẩn hóa (3NF/BCNF), phân rã bảo toàn nối, và không tạo dữ liệu dư thừa không cần thiết.
+
+\subsubsection{Phụ thuộc hàm và Candidate Key}
+Vì mô hình được xây dựng theo phương pháp ánh xạ Thực thể → Quan hệ (mỗi thực thể là một bảng riêng), tập phụ thuộc hàm (FD) của phần lớn quan hệ có dạng \(\{PK\} \rightarrow \{\text{tất cả thuộc tính còn lại}\}\), cộng thêm FD phát sinh từ các ràng buộc \texttt{UNIQUE} tường minh (đóng vai trò candidate key phụ). Ba ví dụ tiêu biểu có nhiều candidate key:
+
+\begin{itemize}
+    \item \textbf{Users:} \(\{UserId\} \rightarrow \text{tất cả}\); \(\{TenantId, Username\} \rightarrow \text{tất cả}\); \(\{TenantId, Email\} \rightarrow \text{tất cả}\) — 3 candidate key.
+    \item \textbf{SKUVariant:} \(\{SKUId\}\); \(\{TenantId, SKUCode\}\); \(\{ProductId, Color, Size\}\) — 3 candidate key.
+    \item \textbf{StockBalance:} chỉ có đúng 1 candidate key là khóa tự nhiên phức hợp \(\{BranchId, SKUId\}\) — không dùng surrogate key vì cặp này vốn đã duy nhất về nghiệp vụ.
+\end{itemize}
+
+Bảng tổng hợp candidate key cho toàn bộ 20 quan hệ được trình bày đầy đủ trong tài liệu \texttt{LOGICAL\_DESIGN.md} đính kèm.
+
+\subsubsection{Chuẩn hóa: 3NF và BCNF}
+\textbf{Định lý áp dụng (BCNF):} quan hệ R đạt BCNF nếu mọi FD không tầm thường \(X \rightarrow Y\) đều có \(X\) là siêu khóa.
+
+Vì mọi bảng chỉ có 2 dạng FD không tầm thường — từ PK và từ các candidate key phụ do \texttt{UNIQUE} sinh ra — và \textbf{cả hai dạng đều có vế trái là candidate key}, nên \textbf{toàn bộ schema đạt BCNF}, ngoại trừ 2 ngoại lệ được khai báo tường minh dưới đây (không che giấu).
+
+\paragraph{Ngoại lệ 1 — \texttt{TenantId} lặp lại trên bảng con.}
+Về hình thức, \texttt{TenantId} trên \texttt{StockBalance} phụ thuộc vào \texttt{BranchId} (qua \texttt{Branch.TenantId}) — chỉ là \emph{một phần} của khóa chính \((BranchId, SKUId)\), tức là \textbf{phụ thuộc bộ phận}, vi phạm 2NF nếu xét tuyệt đối. Tương tự cho 9 bảng con khác. Lý do giữ lại: (1) cho phép lọc theo Tenant trực tiếp trên mọi bảng mà không cần JOIN ngược, phục vụ EF Core Global Query Filter và composite index; (2) phòng thủ theo chiều sâu — nếu một truy vấn quên điều kiện JOIN, \texttt{TenantId} trên chính bảng con vẫn chặn được rò rỉ dữ liệu chéo Tenant. Đây là mẫu thiết kế tiêu chuẩn của kiến trúc SaaS đa khách thuê, đánh đổi có ý thức chứ không phải sai sót — được kiểm soát bằng nguyên tắc \texttt{TenantId} con \textbf{không bao giờ được UPDATE độc lập} sau khi INSERT.
+
+\paragraph{Ngoại lệ 2 — \texttt{StockBalance} là dữ liệu dẫn xuất từ \texttt{InventoryTransaction}.}
+Về lý thuyết, \texttt{StockBalance.OnHand} suy ra được 100\% từ \(\text{SUM}()\) trên \texttt{InventoryTransaction}. Nhóm giữ bảng này như một \textbf{read model} tách biệt (tư duy CQRS) vì: (1) truy vấn tồn khả dụng xảy ra với tần suất rất cao, không thể \(\text{SUM}()\) toàn bộ lịch sử mỗi lần đọc; (2) \texttt{StockBalance} là mục tiêu \textbf{khóa hàng} bắt buộc trong cơ chế chống bán vượt tồn (mục~\ref{sec:concurrency-control}) — cần một bảng đúng 1 dòng/SKU/Branch để áp dụng lock hint. Rủi ro lệch dữ liệu được kiểm soát bằng script đối chiếu định kỳ (mục~4.3.3).
+
+\subsubsection{Phân rã Bảo toàn Nối (Lossless-Join Decomposition)}
+\textbf{Điều kiện đủ (Chandra–Merlin):} phân rã R thành R1, R2 là bảo toàn nối nếu \(R1 \cap R2\) là khóa của R1 hoặc R2.
+
+Vì \textbf{mọi khóa ngoại trong schema đều trỏ đến khóa chính} của bảng cha (không có FK nào trỏ tới cột không phải khóa), điều kiện Chandra–Merlin được thỏa mãn tự động cho toàn bộ \textbf{44 cặp bảng cha-con} (45 cột FK) trong schema — chứng minh chi tiết từng cặp được trình bày trong \texttt{LOGICAL\_DESIGN.md} mục 6. Bảo toàn phụ thuộc (dependency-preserving) cũng đạt, vì mọi FD gốc của một thực thể nằm trọn trong đúng 1 bảng, ngoại trừ 2 ngoại lệ đã khai báo ở trên.
+
+\subsubsection{Loại bỏ dữ liệu dư thừa không cần thiết}
+Khác với 2 ngoại lệ có chủ đích ở trên, các cột sau \textbf{không có lý do chính đáng} để lưu trùng nên được thiết kế dưới dạng \textbf{computed column} (SQL Server tự tính, không lưu vật lý dư thừa, không có nguy cơ dị thường cập nhật):
+\begin{itemize}
+    \item \texttt{OrderItem.Subtotal} \(= Quantity \times UnitPrice\)
+    \item \texttt{StocktakeItem.VarianceQty} \(= CountedQty - SystemQty\)
+    \item \texttt{StockBalance.Available} \(= OnHand - Reserved\) (đồng thời phục vụ đánh index cho cảnh báo tồn thấp)
+\end{itemize}
+Riêng \texttt{Orders.TotalAmount} (cache của \(\text{SUM}(OrderItem.Subtotal)\)) được giữ lại làm cột lưu trùng \textbf{có chủ đích} (không phải computed column) vì lý do hiệu năng hiển thị danh sách đơn hàng — cùng nhóm ngoại lệ với \texttt{StockBalance} ở trên, được kiểm soát bằng script đối chiếu (mục~4.3.2).
+
+\subsection{Script DDL (Định nghĩa bảng)}
+
+Dưới đây là các bảng tiêu biểu nhất, trích từ file \texttt{schema.sql} đầy đủ (20 bảng, phiên bản 2.0). Quy ước chung: khóa chính dùng \texttt{UNIQUEIDENTIFIER} (qua \texttt{NEWID()}) thay vì số tự tăng; mọi cột văn bản dùng \texttt{NVARCHAR} để đảm bảo lưu đúng dấu tiếng Việt.
+
+\begin{lstlisting}
+CREATE TABLE tenants (
+    tenant_id   UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
+    name        NVARCHAR(255) NOT NULL,
+    domain      VARCHAR(100)  NULL,
+    status      VARCHAR(20)   NOT NULL DEFAULT 'ACTIVE'
+                CHECK (status IN ('ACTIVE','SUSPENDED','INACTIVE')),
+    created_at  DATETIME      NOT NULL DEFAULT GETDATE(),
+    updated_at  DATETIME      NOT NULL DEFAULT GETDATE(),
+    CONSTRAINT uq_tenants_domain UNIQUE (domain)
+);
+
+-- Kenh ban (Omnichannel): hinh thuc hoa thanh thuc the tra cuu thay vi
+-- 1 cot text tu do tren orders, phuc vu truc tiep FR-REP-01
+CREATE TABLE sales_channels (
+    channel_id  UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
+    tenant_id   UNIQUEIDENTIFIER NOT NULL FOREIGN KEY REFERENCES tenants(tenant_id),
+    code        VARCHAR(30) NOT NULL,
+    name        NVARCHAR(100) NOT NULL,
+    type        VARCHAR(20) NOT NULL CHECK (type IN ('OFFLINE','ONLINE')),
+    is_active   BIT NOT NULL DEFAULT 1,
+    created_at  DATETIME NOT NULL DEFAULT GETDATE(),
+    CONSTRAINT uq_channels_tenant_code UNIQUE (tenant_id, code)
+);
+
+CREATE TABLE users (
+    user_id        UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
+    tenant_id      UNIQUEIDENTIFIER NOT NULL FOREIGN KEY REFERENCES tenants(tenant_id),
+    username       VARCHAR(100)  NOT NULL,
+    email          VARCHAR(255)  NOT NULL,
+    password_hash  VARCHAR(255)  NOT NULL,
+    role           VARCHAR(50) NOT NULL CHECK (role IN ('Owner','Staff','Cashier')),
+    created_at     DATETIME NOT NULL DEFAULT GETDATE(),
+    CONSTRAINT uq_users_tenant_username UNIQUE (tenant_id, username),
+    CONSTRAINT uq_users_tenant_email    UNIQUE (tenant_id, email)
+);
+\end{lstlisting}
+
+\begin{lstlisting}
+CREATE TABLE sku_variants (
+    sku_id      UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
+    tenant_id   UNIQUEIDENTIFIER NOT NULL FOREIGN KEY REFERENCES tenants(tenant_id),
+    product_id  UNIQUEIDENTIFIER NOT NULL FOREIGN KEY REFERENCES products(product_id),
+    sku_code    VARCHAR(50) NOT NULL,
+    price       DECIMAL(15,2) NOT NULL CHECK (price >= 0),
+    created_at  DATETIME NOT NULL DEFAULT GETDATE(),
+    CONSTRAINT uq_sku_tenant_code UNIQUE (tenant_id, sku_code),
+    CONSTRAINT uq_sku_variant_combo UNIQUE (product_id, color, size)
+);
+
+-- "Read model" ton kho: PK la khoa tu nhien (branch_id, sku_id) -- xem
+-- muc 4.2.2 (chung minh Logic) va muc 4.2.6 (Concurrency Control)
+CREATE TABLE stock_balances (
+    tenant_id   UNIQUEIDENTIFIER NOT NULL FOREIGN KEY REFERENCES tenants(tenant_id),
+    branch_id   UNIQUEIDENTIFIER NOT NULL FOREIGN KEY REFERENCES branches(branch_id),
+    sku_id      UNIQUEIDENTIFIER NOT NULL FOREIGN KEY REFERENCES sku_variants(sku_id),
+    on_hand     NUMERIC(14,3) NOT NULL DEFAULT 0,
+    reserved    NUMERIC(14,3) NOT NULL DEFAULT 0,
+    avg_cost    NUMERIC(14,4) NOT NULL DEFAULT 0,
+    available   AS (on_hand - reserved) PERSISTED,
+    updated_at  DATETIME NOT NULL DEFAULT GETDATE(),
+    CONSTRAINT pk_stock_balances PRIMARY KEY (branch_id, sku_id),
+    CONSTRAINT chk_stock_available_non_negative CHECK (on_hand - reserved >= 0)
+);
+\end{lstlisting}
+
+\begin{lstlisting}
+-- So cai append-only -- nguon su that duy nhat ve ton kho
+CREATE TABLE inventory_transactions (
+    transaction_id     UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
+    tenant_id          UNIQUEIDENTIFIER NOT NULL FOREIGN KEY REFERENCES tenants(tenant_id),
+    branch_id          UNIQUEIDENTIFIER NOT NULL FOREIGN KEY REFERENCES branches(branch_id),
+    sku_id             UNIQUEIDENTIFIER NOT NULL FOREIGN KEY REFERENCES sku_variants(sku_id),
+    transaction_type   VARCHAR(3) NOT NULL CHECK (transaction_type IN ('IN','OUT')),
+    quantity           NUMERIC(14,3) NOT NULL CHECK (quantity > 0),
+    balance_after      NUMERIC(14,3) NOT NULL,
+    reference_id       UNIQUEIDENTIFIER NULL,
+    reference_type     VARCHAR(30) NULL CHECK (reference_type IS NULL OR reference_type IN
+                        ('ORDER','PURCHASE_RECEIPT','STOCK_TRANSFER','STOCKTAKE_ADJUSTMENT')),
+    created_at         DATETIME NOT NULL DEFAULT GETDATE()
+    -- KHONG co updated_at / deleted_at: bang append-only, xem muc 4.2.4
+);
+
+-- Kiem kho (FR-INV-04) -- bo sung sau khi phat hien bi bo sot hoan toan
+CREATE TABLE stocktakes (
+    stocktake_id  UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
+    tenant_id     UNIQUEIDENTIFIER NOT NULL FOREIGN KEY REFERENCES tenants(tenant_id),
+    branch_id     UNIQUEIDENTIFIER NOT NULL FOREIGN KEY REFERENCES branches(branch_id),
+    status        VARCHAR(20) NOT NULL DEFAULT 'InProgress'
+                  CHECK (status IN ('InProgress','Completed')),
+    created_at    DATETIME NOT NULL DEFAULT GETDATE()
+);
+
+-- Chan 2 phien kiem kho InProgress dong thoi tren cung 1 chi nhanh
+CREATE UNIQUE NONCLUSTERED INDEX uq_stocktake_one_active_per_branch
+    ON stocktakes (branch_id) WHERE status = 'InProgress';
+\end{lstlisting}
+
+\begin{lstlisting}
+CREATE TABLE orders (
+    order_id      UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
+    tenant_id     UNIQUEIDENTIFIER NOT NULL FOREIGN KEY REFERENCES tenants(tenant_id),
+    branch_id     UNIQUEIDENTIFIER NOT NULL FOREIGN KEY REFERENCES branches(branch_id),
+    channel_id    UNIQUEIDENTIFIER NOT NULL FOREIGN KEY REFERENCES sales_channels(channel_id),
+    status        VARCHAR(20) NOT NULL DEFAULT 'Draft'
+                  CHECK (status IN ('Draft','Reserved','Confirmed','Completed','Cancelled')),
+    total_amount  DECIMAL(15,2) NOT NULL DEFAULT 0 CHECK (total_amount >= 0),
+    created_at    DATETIME NOT NULL DEFAULT GETDATE()
+);
+
+CREATE TABLE order_items (
+    order_item_id  UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
+    tenant_id      UNIQUEIDENTIFIER NOT NULL FOREIGN KEY REFERENCES tenants(tenant_id),
+    order_id       UNIQUEIDENTIFIER NOT NULL FOREIGN KEY REFERENCES orders(order_id),
+    sku_id         UNIQUEIDENTIFIER NOT NULL FOREIGN KEY REFERENCES sku_variants(sku_id),
+    quantity       NUMERIC(14,3) NOT NULL CHECK (quantity > 0),
+    unit_price     DECIMAL(15,2) NOT NULL CHECK (unit_price >= 0),
+    cost_price     DECIMAL(15,4) NOT NULL CHECK (cost_price >= 0),
+    subtotal       AS (quantity * unit_price) PERSISTED,
+    CONSTRAINT uq_order_items_order_sku UNIQUE (order_id, sku_id)
+);
+\end{lstlisting}
+
+\textit{14 bảng còn lại (Branch, Partner, ProductCategory, Brand, Product, Barcode, StocktakeItem, PurchaseReceipt, PurchaseReceiptItem, StockTransfer, StockTransferItem...) theo đúng cấu trúc tương tự, xem đầy đủ trong file \texttt{schema.sql} đính kèm.}
+
+\subsection{Cơ chế Append-only cho Sổ cái Tồn kho}
+\label{sec:append-only}
+Hiện thực hóa BR-01 và NFR-SEC-03: bảng \texttt{inventory\_transactions} tuyệt đối không cho phép \texttt{UPDATE}/\texttt{DELETE}, kể cả thao tác SQL trực tiếp. SQL Server không hỗ trợ \texttt{BEFORE TRIGGER} — cơ chế chặn dùng \texttt{INSTEAD OF TRIGGER}, kèm \texttt{SET XACT\_ABORT ON} để đảm bảo rollback nhất quán toàn batch:
+
+\begin{lstlisting}
+CREATE TRIGGER trg_block_ledger_modification
+ON inventory_transactions
+INSTEAD OF UPDATE, DELETE
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SET XACT_ABORT ON;
+    RAISERROR (
+      N'inventory_transactions is append-only. % is not allowed. '
+      'Use a compensating entry instead.', 16, 1);
+    ROLLBACK TRANSACTION;
+END;
+\end{lstlisting}
+
+Mọi điều chỉnh sai sót phải thực hiện bằng dòng bù trừ mới (compensating entry) — đúng tinh thần "chỉ ghi thêm, không sửa" của sổ cái kế toán. Bằng chứng kiểm thử tại mục~4.3.2.
+
+\subsection{Cô lập Đa khách thuê — Tenant Isolation}
+Hệ thống áp dụng \textbf{2 lớp phòng thủ}:
+
+\textbf{Lớp 1 (đã có trong schema):} cột \texttt{tenant\_id} trên mọi bảng nghiệp vụ (kể cả 9 bảng con vốn có thể suy ra qua FK — xem ngoại lệ chuẩn hóa mục~4.2.2), làm cơ sở cho EF Core Global Query Filter khi lập trình Backend.
+
+\textbf{Lớp 2 (đã thiết kế, chờ Backend kích hoạt):} SQL Server Row-Level Security (RLS) — ép buộc cô lập Tenant ngay tại tầng CSDL, độc lập với việc Backend có viết đúng \texttt{WHERE tenant\_id = ...} hay không:
+\begin{lstlisting}
+CREATE FUNCTION dbo.fn_tenant_predicate(@tenant_id UNIQUEIDENTIFIER)
+RETURNS TABLE WITH SCHEMABINDING AS
+RETURN SELECT 1 AS result
+WHERE @tenant_id = CAST(SESSION_CONTEXT(N'TenantId') AS UNIQUEIDENTIFIER);
+
+CREATE SECURITY POLICY TenantIsolationPolicy
+ADD FILTER PREDICATE dbo.fn_tenant_predicate(tenant_id) ON dbo.orders,
+ADD FILTER PREDICATE dbo.fn_tenant_predicate(tenant_id) ON dbo.inventory_transactions
+WITH (STATE = ON);
+\end{lstlisting}
+Backend đặt \texttt{SESSION\_CONTEXT('TenantId', @tenant\_id)} ngay sau khi xác thực JWT. Chưa kích hoạt trong phạm vi đồ án vì cần Backend thật để set giá trị này.
+
+\subsection{Kiểm soát đồng thời — Chống bán vượt tồn (Inventory Reservation)}
+\label{sec:concurrency-control}
+Giải quyết trực tiếp NFR-PERF-02. SQL Server mặc định \texttt{READ COMMITTED}, không đủ chống race-condition. Nhóm áp dụng \textbf{Pessimistic Locking} bằng \texttt{WITH (UPDLOCK, ROWLOCK)} trên đúng PK tự nhiên của \texttt{stock\_balances}:
+
+\begin{lstlisting}
+BEGIN TRANSACTION;
+
+SELECT on_hand, reserved
+FROM stock_balances WITH (UPDLOCK, ROWLOCK)
+WHERE branch_id = @branch_id AND sku_id = @sku_id;
+
+-- Kiem tra (on_hand - reserved) >= @requested_qty o tang ung dung
+-- Neu khong du -> ROLLBACK, tra loi 409 Conflict
+
+UPDATE stock_balances
+SET reserved = reserved + @requested_qty, updated_at = GETDATE()
+WHERE branch_id = @branch_id AND sku_id = @sku_id;
+
+COMMIT TRANSACTION;
+\end{lstlisting}
+Vì PK là khóa tự nhiên \((branch\_id, sku\_id)\), câu lệnh khóa hàng seek trực tiếp trên Clustered Index — không cần thêm 1 bước lookup như khi dùng surrogate key. Với 50 giao dịch đồng thời tranh 1 SKU còn 1 tồn, SQL Server tuần tự hóa: chỉ giao dịch đầu tiên thành công, các giao dịch sau thấy \texttt{reserved} đã cập nhật nên tự động bị từ chối — không có khả năng lost update. \texttt{CHECK (on\_hand - reserved >= 0)} là lưới an toàn cuối cùng ở tầng CSDL.
+
+\subsection{Giá vốn bình quân (WAC) và Snapshot giá vốn đơn hàng}
+\texttt{stock\_balances.avg\_cost} được cập nhật theo công thức bình quân gia quyền mỗi khi \texttt{purchase\_receipts} chuyển \texttt{Confirmed}, trong cùng transaction với việc ghi Ledger (đảm bảo atomic — NFR-SEC-02):
+\[
+\text{New Cost} = \frac{(\text{Old Stock} \times \text{Old Cost}) + (\text{Import Qty} \times \text{Import Price})}{\text{Old Stock} + \text{Import Qty}}
+\]
+\texttt{order\_items.cost\_price} snapshot \texttt{avg\_cost} tại thời điểm đơn \texttt{Confirmed} — \texttt{NOT NULL}, bất biến sau khi ghi (BR-04), đảm bảo báo cáo lợi nhuận không bị thay đổi ngược thời gian khi giá vốn trung bình biến động sau đó.
+
+\subsection{Chỉ mục (Index) theo Workload}
+Nguyên tắc: phân tích mẫu truy vấn thực tế thay vì đánh index tràn lan (mỗi index thừa làm chậm INSERT trên bảng ghi nhiều như \texttt{inventory\_transactions}).
+
+\begin{lstlisting}
+CREATE NONCLUSTERED INDEX idx_ledger_tenant_created
+    ON inventory_transactions (tenant_id, created_at);
+CREATE NONCLUSTERED INDEX idx_ledger_tenant_sku
+    ON inventory_transactions (tenant_id, sku_id);
+CREATE NONCLUSTERED INDEX idx_orders_tenant_status
+    ON orders (tenant_id, status) INCLUDE (created_at);
+CREATE NONCLUSTERED INDEX idx_stock_tenant_available
+    ON stock_balances (tenant_id, available);
+\end{lstlisting}
+
+\textbf{Lý do chọn thứ tự cột:} \texttt{TenantId} luôn đứng đầu vì mọi truy vấn multi-tenant đều lọc theo Tenant trước tiên — giúp SQL Server thu hẹp phạm vi quét ngay từ prefix của composite index. Bảng \texttt{purchase\_receipt\_items}, \texttt{stock\_transfer\_items}, \texttt{stocktake\_items} \textbf{không} được đánh thêm index ngoài UNIQUE bắt buộc, vì là bảng chi tiết khối lượng ghi thấp, luôn truy vấn qua bảng cha trước.
+
+\subsection{Chiến lược Backup / Recovery}
+\begin{table}[htbp]
+    \centering
+    \small
+    \caption{Chiến lược backup/recovery đề xuất}
+    \begin{tabularx}{\textwidth}{|p{3.2cm}|Y|}
+        \hline
+        \textbf{Hạng mục} & \textbf{Khuyến nghị} \\
+        \hline
+        Recovery model & \textbf{FULL} — bắt buộc vì Ledger tài chính không được mất giao dịch, cần point-in-time recovery \\
+        \hline
+        Full backup & Hàng tuần (hàng ngày ở giai đoạn phát triển) \\
+        \hline
+        Differential backup & Hàng ngày \\
+        \hline
+        Transaction log backup & Mỗi 15 phút — bảng \texttt{orders}/\texttt{inventory\_transactions} ghi liên tục \\
+        \hline
+        RPO / RTO & RPO ≤ 15 phút (khớp chu kỳ log backup); RTO ≤ 1 giờ (môi trường đồ án) \\
+        \hline
+        Retention & Tối thiểu 30 ngày (full/differential), 7 ngày (log) \\
+        \hline
+        Kiểm thử phục hồi & Diễn tập restore định kỳ (hàng quý) lên môi trường tách biệt \\
+        \hline
+    \end{tabularx}
+\end{table}
+\textit{Đây là khuyến nghị thiết kế — việc thực thi lịch backup thật cần môi trường production, ngoài phạm vi bàn giao học kỳ này (mục~1.6).}
+
+\subsection{Đánh giá OLTP (Online Transaction Processing)}
+Workload của OISM là giao dịch ngắn, tần suất cao (Reserve/Confirm/Deduct), mỗi giao dịch chỉ đụng 1-3 bảng — schema chuẩn hóa 3NF/BCNF (mục~4.2.2) là lựa chọn đúng cho OLTP, ưu tiên nhất quán ghi hơn tốc độ đọc tổng hợp, ngược lại hoàn toàn với mô hình OLAP/star-schema phi chuẩn hóa để tối ưu đọc.
+
+\textbf{Điểm nóng tranh chấp:} \texttt{stock\_balances} là bảng nhiều giao dịch cùng chờ khóa nhất (Flash Sale, NFR-PERF-02) — đã xử lý bằng \texttt{WITH (UPDLOCK, ROWLOCK)} mức dòng (mục~\ref{sec:concurrency-control}).
+
+\textbf{Đọc báo cáo chặn ghi OLTP:} mặc định \texttt{READ COMMITTED} có thể khiến truy vấn báo cáo dài chặn giao dịch ghi và ngược lại. Khuyến nghị bật \texttt{READ\_COMMITTED\_SNAPSHOT} để Reporting dùng row-versioning thay vì xin khóa:
+\begin{lstlisting}
+ALTER DATABASE OISM SET READ_COMMITTED_SNAPSHOT ON;
+\end{lstlisting}
+Đánh đổi: tăng nhẹ dung lượng tempdb — chấp nhận được để giảm blocking giữa OLTP và Reporting. Khi hệ thống có nhiều Tenant lớn đồng thời, nên tách Reporting sang read-replica/data warehouse riêng — ngoài phạm vi đồ án, ghi nhận là hướng mở rộng.
+
+\subsection{Đánh giá Partitioning (đánh giá, chưa triển khai)}
+Bảng có khả năng cần partition trong tương lai: \texttt{inventory\_transactions} — bảng duy nhất tăng trưởng không giới hạn (append-only, không bao giờ xóa). Chiến lược đề xuất khi cần: RANGE theo tháng trên \texttt{created\_at}:
+\begin{lstlisting}
+CREATE PARTITION FUNCTION pf_ledger_monthly (DATETIME)
+    AS RANGE RIGHT FOR VALUES ('2026-01-01','2026-02-01', ...);
+CREATE PARTITION SCHEME ps_ledger_monthly
+    AS PARTITION pf_ledger_monthly ALL TO ([PRIMARY]);
+\end{lstlisting}
+\textbf{Tiêu chí quyết định triển khai thật} (không làm ngay bây giờ): số dòng vượt \textasciitilde10-20 triệu, HOẶC độ trễ báo cáo (p95) vượt ngưỡng NFR-PERF-01 đo được thực tế, HOẶC 1 Tenant chiếm tỷ trọng dữ liệu bất thường lớn. Ở quy mô đồ án/giai đoạn khởi điểm SaaS, 2 index composite \((tenant\_id, created\_at)\) và \((tenant\_id, sku\_id)\) đã đủ đáp ứng — triển khai partitioning sớm khi chưa cần là over-engineering, đúng tinh thần "đánh giá nhưng chỉ triển khai khi quy mô cần".
+
+\subsection{Dữ liệu mẫu (Seed Data)}
+Bộ dữ liệu mẫu gồm 2--3 Tenant độc lập (kiểm chứng NFR-TENANT-01), mỗi Tenant có User theo cả 3 vai trò, sản phẩm/SKU với tồn kho ban đầu, kịch bản Purchase Receipt 2 đợt giá khác nhau (kiểm chứng WAC), đơn hàng mẫu ở đủ trạng thái Draft/Reserved/Confirmed/Completed/Cancelled qua nhiều kênh bán (kiểm chứng tính Omnichannel), và kịch bản Stocktake/StockTransfer minh họa 2 bảng mới bổ sung.

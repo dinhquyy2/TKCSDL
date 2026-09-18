@@ -3,11 +3,17 @@
 Báo cáo tốt nghiệp cho Hệ thống quản lý bán hàng và tồn kho đa kênh (OISM),
 dựng lại từ template báo cáo gốc, phạm vi nội dung: **Thiết kế hệ thống +
 Cơ sở dữ liệu** (không bao gồm code Backend/Frontend — xem Chương 1, mục 1.6).
-**Cơ sở dữ liệu (Chương 4) là trọng tâm của báo cáo** — bao gồm phân tích
-chuẩn hóa (1NF/2NF/3NF), script DDL thật, cơ chế append-only, kiểm soát
-concurrency (locking), chỉ mục tối ưu, và các script kiểm thử SQL thật.
+**Cơ sở dữ liệu (Chương 4) là trọng tâm của báo cáo** — schema 20 bảng,
+chứng minh thiết kế ở cả 2 tầng:
+- **Logical:** phụ thuộc hàm, candidate key, chuẩn hóa 3NF/BCNF (có khai báo
+  rõ 2 ngoại lệ có kiểm soát), phân rã bảo toàn nối, loại bỏ dữ liệu dư thừa.
+- **Physical:** DDL SQL Server thật, PK/FK/CHECK/UNIQUE, cô lập đa Tenant
+  (2 lớp, gồm đề xuất Row-Level Security), chống bán vượt tồn (locking), giá
+  vốn bình quân (WAC), snapshot giá vốn đơn hàng, sổ cái append-only, index
+  theo workload, chiến lược backup/recovery, đánh giá OLTP, đánh giá
+  partitioning (chủ động chưa triển khai, có tiêu chí ngưỡng).
 
-File `main.pdf` đính kèm là bản build sẵn (55 trang) để xem nhanh không cần
+File `main.pdf` đính kèm là bản build sẵn (59 trang) để xem nhanh không cần
 cài LaTeX.
 
 **Gói thêm cần cài so với bản trước:** `\usepackage{listings}` và
