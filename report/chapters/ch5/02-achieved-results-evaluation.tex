@@ -21,7 +21,7 @@ Trong thời hạn 5 tuần, nhóm đã hoàn thành 14 hạng mục bàn giao �
         \hline
         Đặc tả API (Swagger/Postman) & \textit{(điền trạng thái)} & \\
         \hline
-        Script DDL PostgreSQL & \textit{(điền trạng thái)} & \\
+        Script DDL SQL Server & \textit{(điền trạng thái)} & \\
         \hline
         Trigger/rule append-only cho Ledger & \textit{(điền trạng thái)} & Đã kiểm chứng bằng script tự test (Chương 4) \\
         \hline
@@ -39,7 +39,7 @@ Trong thời hạn 5 tuần, nhóm đã hoàn thành 14 hạng mục bàn giao �
 \subsection{Đánh giá theo yêu cầu phi chức năng}
 Vì chưa có Backend thật, các chỉ tiêu phi chức năng về hiệu năng thời gian thực (API Response Time, khả năng chịu tải) chưa thể đo lường trực tiếp. Nhóm đã kiểm chứng được ở mức thiết kế/dữ liệu:
 \begin{itemize}
-    \item Ràng buộc append-only (NFR-SEC-03): đã kiểm chứng thành công qua trigger PostgreSQL.
+    \item Ràng buộc append-only (NFR-SEC-03): đã kiểm chứng thành công qua trigger SQL Server.
     \item Cô lập dữ liệu đa tenant (NFR-TENANT-01): đã kiểm chứng qua truy vấn chéo TenantId trên seed data.
     \item Công thức giá vốn bình quân: đã kiểm chứng đúng với kịch bản nhập hàng nhiều đợt trong seed data.
     \item Concurrency (NFR-PERF-02): mới mô phỏng bằng nhiều phiên SQL song song, \textbf{chưa đo lường được} ở quy mô 50 request đồng thời qua API thật — cần Backend hoàn chỉnh để kiểm thử đầy đủ.

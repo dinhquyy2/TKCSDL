@@ -85,7 +85,7 @@ Bảng dưới đây liệt kê các màn hình dự kiến của hệ thống h
     \endhead
     1 & Tính giá vốn bình quân gia quyền & Domain Service & Tự động tính lại AvgCost khi xác nhận Purchase Receipt \\
     \hline
-    2 & Chống bán vượt tồn kho & Locking Mechanism & SELECT...FOR UPDATE khi Reserve/Confirm/Deduct trên StockBalance \\
+    2 & Chống bán vượt tồn kho & Locking Mechanism & Lock hint (WITH (UPDLOCK, ROWLOCK)) khi Reserve/Confirm/Deduct trên StockBalance \\
     \hline
     3 & Tự hủy đơn Reserved quá hạn & Background Job (Hangfire) & Định kỳ quét đơn Reserved quá thời gian giữ chỗ, tự động Cancel \\
     \hline
@@ -104,11 +104,11 @@ Bảng dưới đây liệt kê các màn hình dự kiến của hệ thống h
 \begin{figure}[H]
     \centering
     \fbox{\parbox{0.9\textwidth}{\centering\vspace{4cm}\textit{[Chèn hình tại đây]}\vspace{4cm}}}
-    \caption{Sơ đồ ERD toàn bộ cơ sở dữ liệu (17 thực thể)}
+    \caption{Sơ đồ ERD toàn bộ cơ sở dữ liệu (20 thực thể)}
     \label{fig:erd-conceptual}
 \end{figure}
 \begin{imgnote}
-📌 Hình 3 — Cần bổ sung hình: \texttt{Hinh\_03\_ERD\_OISM.png} — ERD đầy đủ thể hiện toàn bộ 17 thực thể, quan hệ (1-n, n-n), khóa chính/khóa ngoại. Xem chi tiết danh sách thực thể tại Chương~4, mục~4.2.
+📌 Hình 3 — Cần bổ sung hình: \texttt{Hinh\_03\_ERD\_OISM.png} — ERD đầy đủ thể hiện toàn bộ 20 thực thể, quan hệ (1-n, n-n), khóa chính/khóa ngoại. Xem chi tiết danh sách thực thể tại Chương~4, mục~4.2.
 \end{imgnote}
 
 \subsubsection{UML Class Diagram}
@@ -232,7 +232,7 @@ Bảng dưới đây liệt kê các màn hình dự kiến của hệ thống h
 
 \textbf{Function Details:}
 \begin{itemize}
-    \item Business Rules (\textbf{quan trọng nhất của toàn hệ thống}): Bảng InventoryTransaction là append-only tuyệt đối — cấm UPDATE/DELETE ở mọi tầng, kể cả truy cập SQL trực tiếp (NFR-SEC-03). Cơ chế thực thi bằng trigger/rule ở tầng PostgreSQL (chi tiết tại Chương~4, mục~4.2).
+    \item Business Rules (\textbf{quan trọng nhất của toàn hệ thống}): Bảng InventoryTransaction là append-only tuyệt đối — cấm UPDATE/DELETE ở mọi tầng, kể cả truy cập SQL trực tiếp (NFR-SEC-03). Cơ chế thực thi bằng trigger/rule ở tầng SQL Server (chi tiết tại Chương~4, mục~4.2).
     \item Mọi điều chỉnh sai sót phải tạo dòng bù trừ mới (compensating transaction), không được sửa dòng gốc.
 \end{itemize}
 
@@ -399,13 +399,13 @@ Bảng dưới đây liệt kê các màn hình dự kiến của hệ thống h
 \textbf{Function description:}
 \begin{itemize}
     \item Purpose: Đây là chức năng \textbf{quan trọng nhất} của toàn hệ thống — loại bỏ tuyệt đối khả năng bán vượt tồn kho ngay cả khi nhiều đơn hàng tranh chấp đồng thời.
-    \item Data processing: Tính available = on\_hand − reserved theo thời gian thực; khóa dòng StockBalance (SELECT...FOR UPDATE) trước khi tăng/giảm reserved hoặc on\_hand.
+    \item Data processing: Tính available = on\_hand − reserved theo thời gian thực; khóa dòng StockBalance bằng lock hint (WITH (UPDLOCK, ROWLOCK)) trước khi tăng/giảm reserved hoặc on\_hand.
 \end{itemize}
 
 \textbf{Function Details:}
 \begin{itemize}
     \item Validation: Nếu available < số lượng đặt mua → từ chối đơn (reject), trả lỗi 409 Conflict.
-    \item Business Rules (\textbf{NFR-PERF-02}): Bắt buộc dùng Pessimistic Locking (\texttt{SELECT...FOR UPDATE}) hoặc Optimistic Locking (Version Check) ở tầng cơ sở dữ liệu — không được xử lý kiểm tra tồn kho chỉ ở tầng ứng dụng, vì điều này không đủ để chống race-condition khi có nhiều request đồng thời.
+    \item Business Rules (\textbf{NFR-PERF-02}): Bắt buộc dùng Pessimistic Locking (lock hint \texttt{WITH (UPDLOCK, ROWLOCK)}) hoặc Optimistic Locking (Version Check) ở tầng cơ sở dữ liệu — không được xử lý kiểm tra tồn kho chỉ ở tầng ứng dụng, vì điều này không đủ để chống race-condition khi có nhiều request đồng thời.
     \item Normal Case: Reserve thành công → tăng reserved, đơn chuyển Reserved. Confirm → trừ on\_hand, giảm reserved, ghi Ledger OUT. Cancel → giảm reserved, trả lại tồn khả dụng.
     \item Abnormal Case (kịch bản Flash Sale): 50 đơn hàng đồng thời tranh 1 SKU chỉ còn 1 đơn vị tồn → chỉ đúng 1 đơn được Reserve thành công, 49 đơn còn lại bị reject — không có trường hợp available âm.
 \end{itemize}

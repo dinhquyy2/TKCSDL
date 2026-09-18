@@ -1,0 +1,29 @@
+\section{Môi trường và công nghệ sử dụng}
+
+\subsection{Công nghệ đã sử dụng trong phạm vi bàn giao (Thiết kế + Database)}
+\begin{itemize}
+    \item \textbf{Cơ sở dữ liệu:} Microsoft SQL Server 2022, chạy qua Docker (image \texttt{mcr.microsoft.com/mssql/server}) để đảm bảo tính nhất quán môi trường giữa các thành viên.
+    \item \textbf{Công cụ thiết kế dữ liệu:} dbdiagram.io (ERD), draw.io (Class Diagram, Sequence Diagram, State Diagram).
+    \item \textbf{Công cụ quản lý CSDL:} SQL Server Management Studio (SSMS) / Azure Data Studio để chạy thử script DDL, seed data và script kiểm tra toàn vẹn.
+    \item \textbf{Đặc tả API:} Swagger Editor / Postman (dùng để đặc tả, không cần Backend thật để chạy).
+    \item \textbf{Quản lý mã nguồn:} GitHub (script SQL, tài liệu thiết kế).
+\end{itemize}
+
+\subsection{Công nghệ đã hoạch định cho hệ thống hoàn chỉnh (chưa triển khai trong học kỳ này)}
+Các công nghệ dưới đây đã được xác định trong thiết kế kiến trúc (Chương 3) làm cơ sở cho việc lập trình Backend/Frontend ở giai đoạn tiếp theo:
+\begin{itemize}
+    \item \textbf{Backend:} .NET~8 Web API, theo Clean Architecture (Domain/Application/Infrastructure/Presentation), truy cập dữ liệu qua Entity Framework Core với provider \texttt{Microsoft.EntityFrameworkCore.SqlServer}.
+    \item \textbf{Frontend:} ReactJS cho Admin Dashboard; ReactJS PWA cho POS Application.
+    \item \textbf{Giao tiếp real-time:} SignalR (WebSocket).
+    \item \textbf{Background Job:} Hangfire (hỗ trợ sẵn storage provider cho SQL Server).
+    \item \textbf{Containerization \& CI/CD:} Docker, Docker Compose, GitHub Actions.
+\end{itemize}
+
+\subsection{Môi trường phát triển}
+\begin{itemize}
+    \item \textbf{Hệ quản trị CSDL:} SQL Server 2022 container, mapping port 1433, volume lưu trữ dữ liệu bền vững giữa các lần chạy.
+    \item \textbf{Quản lý mã nguồn:} Git/GitHub, quy ước nhánh \texttt{main}, \texttt{feature/erd}, \texttt{feature/ddl-schema}, \texttt{feature/seed-data}.
+    \item \textbf{Môi trường:} Một môi trường \texttt{development} duy nhất trong phạm vi đồ án (chưa phân tách \texttt{staging}/\texttt{production} vì chưa triển khai thực tế).
+\end{itemize}
+
+\textit{Lưu ý chuyển đổi hệ quản trị CSDL: Thiết kế logic (ERD, chuẩn hóa, Business Rules ở Chương~3) hoàn toàn độc lập với hệ quản trị CSDL. Nhóm chọn SQL Server thay vì PostgreSQL cho bản triển khai vật lý vì phù hợp hơn với hệ sinh thái .NET/EF Core đã hoạch định cho Backend, và vì mức độ phổ biến của SQL Server trong môi trường doanh nghiệp Việt Nam.}
