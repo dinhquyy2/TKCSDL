@@ -1,5 +1,4 @@
--- OISM - Rang buoc Append-only cho So cai Ton kho (inventory_transactions)
--- Ky thuat: INSTEAD OF TRIGGER (SQL Server khong ho tro BEFORE TRIGGER)
+
 -- Xem giai trinh: PHYSICAL_DESIGN.md muc 5
 
 CREATE TRIGGER trg_Prevent_Update_Delete_Inventory
