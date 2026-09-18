@@ -1,0 +1,16 @@
+\babel@toc {vietnamese}{}\relax 
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {3.1}{\ignorespaces Sơ đồ kiến trúc tổng thể hệ thống (Architecture / System Context Diagram)}}{14}{figure.3.1}%
+\contentsline {figure}{\numberline {3.2}{\ignorespaces Sơ đồ Use Case tổng quát của hệ thống}}{15}{figure.3.2}%
+\contentsline {figure}{\numberline {3.3}{\ignorespaces Sơ đồ ERD toàn bộ cơ sở dữ liệu (20 thực thể)}}{18}{figure.3.3}%
+\contentsline {figure}{\numberline {3.4}{\ignorespaces UML Class Diagram các entity chính}}{19}{figure.3.4}%
+\contentsline {figure}{\numberline {3.5}{\ignorespaces Sequence Diagram — luồng nhập hàng \& tính giá vốn bình quân}}{22}{figure.3.5}%
+\contentsline {figure}{\numberline {3.6}{\ignorespaces Sequence Diagram — luồng chuyển kho 2 bước (Outbound/Inbound)}}{23}{figure.3.6}%
+\contentsline {figure}{\numberline {3.7}{\ignorespaces Sequence Diagram — luồng kiểm kho \& sinh bút toán điều chỉnh}}{24}{figure.3.7}%
+\contentsline {figure}{\numberline {3.8}{\ignorespaces State Diagram — vòng đời đơn hàng (Order State Machine)}}{25}{figure.3.8}%
+\contentsline {figure}{\numberline {3.9}{\ignorespaces Sequence Diagram — luồng giữ chỗ tồn kho (Stock Reservation)}}{26}{figure.3.9}%
+\contentsline {figure}{\numberline {3.10}{\ignorespaces Sequence Diagram — luồng thanh toán nhanh tại POS (Fast Checkout)}}{27}{figure.3.10}%
+\addvspace {10\p@ }
+\addvspace {10\p@ }

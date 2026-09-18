@@ -1,4 +1,6 @@
-
+-- OISM - Du lieu mau (Seed Data) - khop voi schema.sql v2.0
+-- Kich ban: 1 Tenant, 2 chi nhanh, nhap hang 2 dot gia khac nhau (kiem chung
+-- cong thuc binh quan gia quyen), 1 don hang ban qua kenh POS.
 
 DECLARE @TenantID UNIQUEIDENTIFIER = '11111111-1111-1111-1111-111111111111';
 

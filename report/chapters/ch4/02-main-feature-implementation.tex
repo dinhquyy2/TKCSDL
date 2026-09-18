@@ -230,10 +230,10 @@ CREATE TABLE order_items (
 
 \subsection{Cơ chế Append-only cho Sổ cái Tồn kho}
 \label{sec:append-only}
-Hiện thực hóa BR-01 và NFR-SEC-03: bảng \texttt{inventory\_transactions} tuyệt đối không cho phép \texttt{UPDATE}/\texttt{DELETE}, kể cả thao tác SQL trực tiếp. SQL Server không hỗ trợ \texttt{BEFORE TRIGGER} — cơ chế chặn dùng \texttt{INSTEAD OF TRIGGER}, kèm \texttt{SET XACT\_ABORT ON} để đảm bảo rollback nhất quán toàn batch:
+Hiện thực hóa BR-01 và NFR-SEC-03: bảng \texttt{inventory\_transactions} tuyệt đối không cho phép \texttt{UPDATE}/\texttt{DELETE}, kể cả thao tác SQL trực tiếp. SQL Server không hỗ trợ \texttt{BEFORE TRIGGER} — cơ chế chặn dùng \texttt{INSTEAD OF TRIGGER}, kèm \texttt{SET XACT\_ABORT ON} để đảm bảo rollback nhất quán toàn batch. Dùng \texttt{CREATE OR ALTER TRIGGER} (thay vì \texttt{CREATE TRIGGER}) để có thể chạy lại script nhiều lần khi thiết lập lại môi trường mà không gặp lỗi "trigger already exists" (Msg 2111):
 
 \begin{lstlisting}
-CREATE TRIGGER trg_block_ledger_modification
+CREATE OR ALTER TRIGGER trg_block_ledger_modification
 ON inventory_transactions
 INSTEAD OF UPDATE, DELETE
 AS

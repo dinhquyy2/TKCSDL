@@ -94,6 +94,88 @@ Báo cáo \& cảnh báo & Trung bình & TV1, TV2 & Schema hỗ trợ truy vấn
 \caption{Bảng tổng hợp yêu cầu chức năng và phi chức năng theo ưu tiên}
 \end{longtable}
 
+\section{Ma trận truy vết yêu cầu (Requirements Traceability Matrix — RTM)}
+\label{sec:rtm}
+
+Theo đề cương đồ án (mục e — Theory \& Practical), RTM là tài liệu bắt buộc đi kèm URS, nối 3 lớp: \textbf{Yêu cầu (FR/NFR) → Thiết kế đáp ứng → Test Case kiểm chứng}. Mã Test Case (TC-01 đến TC-14) tham chiếu trực tiếp tới bảng kết quả kiểm thử thật tại Chương~4, mục~\ref{sec:test-results}.
+
+\begin{longtable}{|p{2.1cm}|p{5.2cm}|p{3.3cm}|p{2.6cm}|}
+\hline
+\textbf{Mã yêu cầu} & \textbf{Thiết kế đáp ứng} & \textbf{Test Case} & \textbf{Trạng thái} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Mã yêu cầu} & \textbf{Thiết kế đáp ứng} & \textbf{Test Case} & \textbf{Trạng thái} \\
+\hline
+\endhead
+
+\multicolumn{4}{|l|}{\textit{Nhóm FR-AUTH — Xác thực \& Đa khách thuê}} \\ \hline
+FR-AUTH-01 & Bảng \texttt{tenants} & TC-01 & Schema OK \\ \hline
+FR-AUTH-02 & Bảng \texttt{users} (username/email UNIQUE theo Tenant), JWT & TC-01 & Schema OK, JWT ngoài phạm vi \\ \hline
+FR-AUTH-03 & \texttt{users.role} CHECK, Bảng RBAC (Chương 3, mục 3.3.1) & TC-01 & Middleware RBAC ngoài phạm vi \\ \hline
+FR-AUTH-04 & Bảng \texttt{branches} & TC-01 & Schema OK \\ \hline
+
+\multicolumn{4}{|l|}{\textit{Nhóm FR-PROD — Quản lý sản phẩm \& biến thể}} \\ \hline
+FR-PROD-01 & \texttt{product\_categories} (parent\_id), \texttt{brands} & TC-01 & Schema OK \\ \hline
+FR-PROD-02 & \texttt{products}, \texttt{sku\_variants} (UNIQUE tenant\_id+sku\_code) & TC-01 & Schema OK \\ \hline
+FR-PROD-03 & \texttt{barcodes} (UNIQUE code toàn hệ thống) & TC-01 & Schema OK \\ \hline
+FR-PROD-04 & \texttt{sku\_variants.price}, \texttt{products.base\_price} & TC-01 & Schema OK \\ \hline
+
+\multicolumn{4}{|l|}{\textit{Nhóm FR-INV — Sổ cái \& Quản lý tồn kho}} \\ \hline
+FR-INV-01 & \texttt{inventory\_transactions} + trigger append-only (mục 4.2.4) & TC-02, TC-03, TC-08 & PASS (chạy thật) \\ \hline
+FR-INV-02 & \texttt{purchase\_receipts/items} + công thức WAC (mục 4.2.7) & TC-10 & PASS (chạy thật) \\ \hline
+FR-INV-03 & \texttt{stock\_transfers/items}, seed data minh họa (mục 4.2.12) & TC-01 & Schema OK \\ \hline
+FR-INV-04 & \texttt{stocktakes/items} + filtered unique index (mục 4.2.3) & TC-01 & Schema OK \\ \hline
+
+\multicolumn{4}{|l|}{\textit{Nhóm FR-COST — Giá vốn bình quân}} \\ \hline
+FR-COST-01 & \texttt{stock\_balances.avg\_cost}, cập nhật atomic (mục 4.2.7) & TC-10 & PASS (chạy thật, 7.333.333,33đ) \\ \hline
+FR-COST-02 & \texttt{order\_items.cost\_price NOT NULL} (snapshot, BR-04) & TC-01 & Schema OK, logic snapshot ở Backend \\ \hline
+
+\multicolumn{4}{|l|}{\textit{Nhóm FR-ORD — Trung tâm đơn hàng}} \\ \hline
+FR-ORD-01 & \texttt{sales\_channels} + \texttt{orders.channel\_id} & TC-01 & Schema OK \\ \hline
+FR-ORD-02 & \texttt{orders.status} CHECK 5 trạng thái (mục 4.2.3) & TC-01 & Schema OK, đủ 5 trạng thái trong seed data \\ \hline
+FR-ORD-03 & Bảng \texttt{orders} (Staff duyệt/hủy) & — & Ngoài phạm vi (Backend) \\ \hline
+
+\multicolumn{4}{|l|}{\textit{Nhóm FR-RSE — Chống bán vượt tồn}} \\ \hline
+FR-RSE-01 & \texttt{stock\_balances.available} (computed column) & TC-11 & PASS (chạy thật) \\ \hline
+FR-RSE-02 & \texttt{WITH (UPDLOCK, ROWLOCK)} (mục 4.2.6) & TC-14 & Chưa chạy — thủ công \\ \hline
+FR-RSE-03 & Cùng cơ chế locking (mục 4.2.6) & TC-11, TC-14 & TC-11 PASS, TC-14 chưa chạy \\ \hline
+
+\multicolumn{4}{|l|}{\textit{Nhóm FR-POS — Bán hàng tại quầy}} \\ \hline
+FR-POS-01 & Giao diện POS & — & Ngoài phạm vi (Frontend) \\ \hline
+FR-POS-02 & \texttt{stock\_balances.available} & TC-11 & PASS (chạy thật) \\ \hline
+FR-POS-03 & Giao diện POS, Browser Print API & — & Ngoài phạm vi (Frontend) \\ \hline
+FR-POS-04 & Giao dịch atomic Reserve→Confirm→Deduct (mục 4.2.6) & TC-14 & Chưa chạy — thủ công \\ \hline
+
+\multicolumn{4}{|l|}{\textit{Nhóm FR-REP — Báo cáo \& Cảnh báo}} \\ \hline
+FR-REP-01 & Index \texttt{idx\_orders\_tenant\_status} (mục 4.2.8) & — & Ngoài phạm vi (truy vấn báo cáo ở Backend) \\ \hline
+FR-REP-02 & Index \texttt{idx\_order\_items\_tenant\_sku} (mục 4.2.8) & — & Ngoài phạm vi (Backend) \\ \hline
+FR-REP-03 & \texttt{stock\_balances.available} + \texttt{idx\_stock\_tenant\_available} & TC-01 & Schema OK \\ \hline
+
+\multicolumn{4}{|l|}{\textit{Nhóm FR-SIM — Webhook Simulator \& Real-time}} \\ \hline
+FR-SIM-01 & \texttt{sales\_channels}, \texttt{orders.channel\_id} & — & Ngoài phạm vi (Backend) \\ \hline
+FR-SIM-02 & — & — & Ngoài phạm vi (Backend/SignalR) \\ \hline
+FR-SIM-03 & \texttt{orders.status}, \texttt{stocktakes.status} & — & Ngoài phạm vi (Backend/Hangfire) \\ \hline
+
+\multicolumn{4}{|l|}{\textit{Yêu cầu phi chức năng (NFR) trọng yếu}} \\ \hline
+NFR-PERF-01 & Index theo workload (mục 4.2.8) & — & Chưa đo (cần Backend chạy thật) \\ \hline
+NFR-PERF-02 & \texttt{WITH (UPDLOCK, ROWLOCK)} (mục 4.2.6) & TC-14 & Chưa chạy — thủ công \\ \hline
+NFR-TENANT-01 & \texttt{tenant\_id} trên mọi bảng nghiệp vụ (mục 4.2.2) & TC-04–TC-07 & PASS (chạy thật, 4/4 = 0 dòng) \\ \hline
+NFR-TENANT-02 & Index composite (tenant\_id, created\_at/sku\_id) & TC-01 & Schema OK, đo hiệu năng thật ngoài phạm vi \\ \hline
+NFR-SEC-01 & Mã hóa mật khẩu, HTTPS/TLS, JWT & — & Ngoài phạm vi (Backend) \\ \hline
+NFR-SEC-02 & Giao dịch atomic (mục 4.2.6) & TC-14 & Chưa chạy — thủ công \\ \hline
+NFR-SEC-03 & Trigger append-only (mục 4.2.4) & TC-02, TC-03 & PASS (chạy thật) \\ \hline
+NFR-USA-01 & — & — & Ngoài phạm vi (vận hành production) \\ \hline
+NFR-USA-02 & Giao diện POS & — & Ngoài phạm vi (Frontend) \\ \hline
+NFR-MAINT-01 & Clean Architecture & — & Ngoài phạm vi (Backend) \\ \hline
+NFR-MAINT-02 & Test coverage Backend & — & Ngoài phạm vi (Backend) \\ \hline
+
+\caption{Ma trận truy vết yêu cầu (RTM) — 30 FR + 11 NFR trọng yếu}
+\label{tab:rtm-full}
+\end{longtable}
+
+\textbf{Tóm tắt độ phủ:} 13/41 yêu cầu đã có bằng chứng kiểm thử PASS chạy thật (TC-01 đến TC-13); 4 yêu cầu chờ TC-14 (thao tác thủ công, mục~4.3.7); phần còn lại thuộc phạm vi Backend/Frontend, ngoài phạm vi bàn giao học kỳ này (mục~\ref{sec:scope-limitations}) nhưng đã có thiết kế schema/index sẵn sàng để lập trình tiếp.
+
 \section{Mức độ sẵn sàng cho giai đoạn thiết kế cơ sở dữ liệu}
 
 Một đặc tả yêu cầu tốt phải cho phép chuyển tiếp sang thiết kế dữ liệu chi tiết mà không cần giải thích thêm nhiều. Đối với OISM, các yêu cầu cốt lõi đã được phân tách theo thực thể dữ liệu, quy trình nghiệp vụ, phân quyền và ràng buộc toàn vẹn — cho phép triển khai schema SQL Server với sự tách biệt rõ ràng giữa các nhóm bảng (Tenant/Auth, Catalog, Inventory Ledger, Order, Reporting).
