@@ -66,31 +66,31 @@
 \contentsline {subsubsection}{\numberline {3.3.7.2}Snapshot giá vốn khi xuất kho (COGS Snapshot on Dispatch)}{24}{subsubsection.3.3.7.2}%
 \contentsline {subsection}{\numberline {3.3.8}FR-ORD: Trung tâm đơn hàng tập trung (Centralized Order Hub)}{25}{subsection.3.3.8}%
 \contentsline {subsubsection}{\numberline {3.3.8.1}Vòng đời đơn hàng (Order State Machine)}{25}{subsubsection.3.3.8.1}%
-\contentsline {subsubsection}{\numberline {3.3.8.2}Chuẩn hóa đơn hàng đa kênh \& Xử lý đơn}{25}{subsubsection.3.3.8.2}%
+\contentsline {subsubsection}{\numberline {3.3.8.2}Chuẩn hóa đơn hàng đa kênh \& Xử lý đơn}{26}{subsubsection.3.3.8.2}%
 \contentsline {subsection}{\numberline {3.3.9}FR-RSE: Cơ chế chống bán vượt tồn (Anti-Oversell Mechanism)}{26}{subsection.3.3.9}%
 \contentsline {subsubsection}{\numberline {3.3.9.1}Giữ chỗ \& Trừ/Giải phóng tồn kho (Reserve / Deduct / Release)}{26}{subsubsection.3.3.9.1}%
 \contentsline {subsection}{\numberline {3.3.10}FR-POS: Bán hàng tại quầy — PWA POS (Counter Sales)}{27}{subsection.3.3.10}%
 \contentsline {subsubsection}{\numberline {3.3.10.1}Checkout nhanh tại quầy (Fast Checkout Workflow)}{27}{subsubsection.3.3.10.1}%
-\contentsline {subsubsection}{\numberline {3.3.10.2}Các chức năng còn lại của nhóm FR-POS}{27}{subsubsection.3.3.10.2}%
+\contentsline {subsubsection}{\numberline {3.3.10.2}Các chức năng còn lại của nhóm FR-POS}{28}{subsubsection.3.3.10.2}%
 \contentsline {subsection}{\numberline {3.3.11}FR-REP: Báo cáo \& Cảnh báo (Reports \& Alerts)}{28}{subsection.3.3.11}%
 \contentsline {subsection}{\numberline {3.3.12}FR-SIM: Webhook Simulator \& Xử lý thời gian thực}{28}{subsection.3.3.12}%
-\contentsline {subsection}{\numberline {3.3.13}External Interfaces}{28}{subsection.3.3.13}%
-\contentsline {subsection}{\numberline {3.3.14}Quality Attributes}{28}{subsection.3.3.14}%
-\contentsline {subsubsection}{\numberline {3.3.14.1}Performance}{28}{subsubsection.3.3.14.1}%
+\contentsline {subsection}{\numberline {3.3.13}External Interfaces}{29}{subsection.3.3.13}%
+\contentsline {subsection}{\numberline {3.3.14}Quality Attributes}{29}{subsection.3.3.14}%
+\contentsline {subsubsection}{\numberline {3.3.14.1}Performance}{29}{subsubsection.3.3.14.1}%
 \contentsline {subsubsection}{\numberline {3.3.14.2}Reliability \& Data Integrity}{29}{subsubsection.3.3.14.2}%
 \contentsline {subsubsection}{\numberline {3.3.14.3}Security}{29}{subsubsection.3.3.14.3}%
 \contentsline {subsubsection}{\numberline {3.3.14.4}Multi-tenancy \& Scalability}{29}{subsubsection.3.3.14.4}%
 \contentsline {subsubsection}{\numberline {3.3.14.5}Usability}{29}{subsubsection.3.3.14.5}%
-\contentsline {subsubsection}{\numberline {3.3.14.6}Maintainability}{29}{subsubsection.3.3.14.6}%
-\contentsline {subsection}{\numberline {3.3.15}Business Rules}{29}{subsection.3.3.15}%
+\contentsline {subsubsection}{\numberline {3.3.14.6}Maintainability}{30}{subsubsection.3.3.14.6}%
+\contentsline {subsection}{\numberline {3.3.15}Business Rules}{30}{subsection.3.3.15}%
 \contentsline {subsection}{\numberline {3.3.16}Common Requirements}{30}{subsection.3.3.16}%
 \contentsline {subsection}{\numberline {3.3.17}Application Messages List}{30}{subsection.3.3.17}%
-\contentsline {subsection}{\numberline {3.3.18}Bảng tóm tắt yêu cầu theo nhóm chức năng}{30}{subsection.3.3.18}%
+\contentsline {subsection}{\numberline {3.3.18}Bảng tóm tắt yêu cầu theo nhóm chức năng}{31}{subsection.3.3.18}%
 \contentsline {subsection}{\numberline {3.3.19}Kết luận đặc tả yêu cầu}{31}{subsection.3.3.19}%
 \contentsline {section}{\numberline {3.4}Tổng hợp yêu cầu chức năng và phi chức năng}{32}{section.3.4}%
 \contentsline {section}{\numberline {3.5}Ma trận truy vết yêu cầu (Requirements Traceability Matrix — RTM)}{32}{section.3.5}%
-\contentsline {section}{\numberline {3.6}Mức độ sẵn sàng cho giai đoạn thiết kế cơ sở dữ liệu}{34}{section.3.6}%
-\contentsline {section}{\numberline {3.7}Nhận định cuối cùng}{34}{section.3.7}%
+\contentsline {section}{\numberline {3.6}Mức độ sẵn sàng cho giai đoạn thiết kế cơ sở dữ liệu}{35}{section.3.6}%
+\contentsline {section}{\numberline {3.7}Nhận định cuối cùng}{35}{section.3.7}%
 \contentsline {chapter}{\numberline {4}Triển khai Cơ sở dữ liệu và Kiểm thử}{37}{chapter.4}%
 \contentsline {section}{\numberline {4.1}Môi trường và công nghệ sử dụng}{37}{section.4.1}%
 \contentsline {subsection}{\numberline {4.1.1}Công nghệ đã sử dụng trong phạm vi bàn giao (Thiết kế + Database)}{37}{subsection.4.1.1}%

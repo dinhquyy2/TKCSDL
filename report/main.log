@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999997 (MiKTeX 25.12) (preloaded format=xelatex 2026.9.6)  19 SEP 2026 03:04
+This is XeTeX, Version 3.141592653-2.6-0.999997 (MiKTeX 25.12) (preloaded format=xelatex 2026.9.6)  19 SEP 2026 04:17
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -2325,30 +2325,58 @@ Underfull \hbox (badness 10000) in alignment at lines 208--216
 
 chapters/ch3/03-functional-requirements.tex:216: ignored error: Infinite glue s
 hrinkage found in box being split [20]
-Missing character: There is no 📌 in font Times New Roman Italic/OT:script=latn;
-language=dflt;mapping=tex-text;!
-[21]
-Missing character: There is no 📌 in font Times New Roman Italic/OT:script=latn;
-language=dflt;mapping=tex-text;!
+File: ../docs/Sequence/3.5.png Graphic file (type bmp)
+<../docs/Sequence/3.5.png>
+ [21]
+File: ../docs/Sequence/3.6.png Graphic file (type bmp)
+<../docs/Sequence/3.6.png>
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [22]
-Missing character: There is no 📌 in font Times New Roman Italic/OT:script=latn;
-language=dflt;mapping=tex-text;!
+File: ../docs/Sequence/3.7.png Graphic file (type bmp)
+<../docs/Sequence/3.7.png>
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [23]
 [24]
-Missing character: There is no 📌 in font Times New Roman Italic/OT:script=latn;
-language=dflt;mapping=tex-text;!
-[25]
-Missing character: There is no 📌 in font Times New Roman Italic/OT:script=latn;
-language=dflt;mapping=tex-text;!
-[26]
-Missing character: There is no 📌 in font Times New Roman Italic/OT:script=latn;
-language=dflt;mapping=tex-text;!
+File: ../docs/Sequence/3.8.png Graphic file (type bmp)
+<../docs/Sequence/3.8.png>
+ [25]
+File: ../docs/Sequence/3.9.png Graphic file (type bmp)
+<../docs/Sequence/3.9.png>
+ [26]
+File: ../docs/Sequence/4.0.png Graphic file (type bmp)
+<../docs/Sequence/4.0.png>
+
+Underfull \vbox (badness 1558) has occurred while \output is active []
+
+ [27]
+Underfull \hbox (badness 10000) in alignment at lines 433--437
+[] [] []
+ []
+
+
+Underfull \hbox (badness 10000) in alignment at lines 437--441
+[] [] []
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 442--443
+[]|\TU/TimesNewRoman(0)/m/n/10 Giao diện tối ưu cảm ứng/phím tắt, tìm sản phẩm
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 444--445
+[]|\TU/TimesNewRoman(0)/m/n/10 Thanh toán tiền mặt/QR, in hóa đơn qua Browser
+ []
+
+
+Underfull \hbox (badness 10000) in alignment at lines 441--447
+[] [] []
+ []
+
 
 Underfull \hbox (badness 10000) in alignment at lines 451--455
 [] [] []
@@ -2361,86 +2389,60 @@ Underfull \hbox (badness 10000) in alignment at lines 455--459
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 460--461
-[]|\TU/TimesNewRoman(0)/m/n/10 Giao diện tối ưu cảm ứng/phím tắt, tìm sản phẩm
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 462--463
-[]|\TU/TimesNewRoman(0)/m/n/10 Thanh toán tiền mặt/QR, in hóa đơn qua Browser
- []
-
-
-Underfull \hbox (badness 10000) in alignment at lines 459--465
-[] [] []
- []
-
-chapters/ch3/03-functional-requirements.tex:465: ignored error: Infinite glue s
-hrinkage found in box being split [27]
-Underfull \hbox (badness 10000) in alignment at lines 469--473
-[] [] []
- []
-
-
-Underfull \hbox (badness 10000) in alignment at lines 473--477
-[] [] []
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 478--479
 []|\TU/TimesNewRoman(0)/m/n/10 Doanh thu thuần, tổng giá vốn, lợi nhuận gộp;
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 480--481
+Underfull \hbox (badness 10000) in paragraph at lines 462--463
 []|\TU/TimesNewRoman(0)/m/n/10 Giá trị tồn kho theo giá vốn, sản phẩm bán
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 482--483
+Underfull \hbox (badness 10000) in paragraph at lines 464--465
 []|\TU/TimesNewRoman(0)/m/n/10 Thông báo tự động khi available ≤ ngưỡng đặt
  []
 
 
-Underfull \hbox (badness 10000) in alignment at lines 477--485
+Underfull \hbox (badness 10000) in alignment at lines 459--467
 [] [] []
  []
 
 
-Underfull \hbox (badness 10000) in alignment at lines 489--493
+Underfull \hbox (badness 10000) in alignment at lines 471--475
 [] [] []
  []
 
 
-Underfull \hbox (badness 10000) in alignment at lines 493--497
+Underfull \hbox (badness 10000) in alignment at lines 475--479
 [] [] []
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 498--498
+Underfull \hbox (badness 10000) in paragraph at lines 480--480
 []|\TU/TimesNewRoman(0)/m/n/10 E-commerce Webhook Simula-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 498--499
+Underfull \hbox (badness 10000) in paragraph at lines 480--481
 []|\TU/TimesNewRoman(0)/m/n/10 Gửi payload giả lập Shopee/TikTok/Lazada để
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 500--501
+Underfull \hbox (badness 10000) in paragraph at lines 482--483
 []|\TU/TimesNewRoman(0)/m/n/10 SignalR đẩy cảnh báo đơn hàng mới đến Ad-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 502--503
+Underfull \hbox (badness 10000) in paragraph at lines 484--485
 []|\TU/TimesNewRoman(0)/m/n/10 Hangfire: tự hủy đơn Reserved quá hạn, tổng hợp
  []
 
 
-Underfull \hbox (badness 10000) in alignment at lines 497--505
+Underfull \hbox (badness 10000) in alignment at lines 479--487
 [] [] []
  []
 
-) (chapters/ch3/04-non-functional-requirements.tex [28])
+) (chapters/ch3/04-non-functional-requirements.tex [28] [29])
 (chapters/ch3/05-requirement-appendix.tex
 Underfull \hbox (badness 10000) in alignment at lines 3--7
 [] []
@@ -2510,8 +2512,7 @@ Underfull \hbox (badness 10000) in alignment at lines 11--34
 [] []
  []
 
-chapters/ch3/05-requirement-appendix.tex:34: ignored error: Infinite glue shrin
-kage found in box being split [29]
+
 Underfull \hbox (badness 10000) in alignment at lines 46--51
 [] [] [] [] []
  []
@@ -2556,7 +2557,8 @@ Underfull \hbox (badness 10000) in alignment at lines 56--79
 [] [] [] [] []
  []
 
-)
+chapters/ch3/05-requirement-appendix.tex:79: ignored error: Infinite glue shrin
+kage found in box being split [30])
 Underfull \hbox (badness 10000) in alignment at lines 20--24
 [] [] [] []
  []
@@ -2681,7 +2683,7 @@ Underfull \hbox (badness 10000) in alignment at lines 28--48
 [] [] [] []
  []
 
-[30]
+[31]
 Underfull \hbox (badness 10000) in alignment at lines 73--77
 [] [] [] []
  []
@@ -2762,7 +2764,7 @@ Underfull \hbox (badness 10000) in alignment at lines 81--95
 [] [] [] []
  []
 
-[31]
+
 Underfull \hbox (badness 10000) in alignment at lines 102--106
 [] [] [] []
  []
@@ -3139,7 +3141,11 @@ Underfull \hbox (badness 10000) in alignment at lines 110--175
 chapters/chapter3.tex:175: ignored error: Infinite glue shrinkage found in box 
 being split [32]
 chapters/chapter3.tex:175: ignored error: Infinite glue shrinkage found in box 
-being split [33]) (chapters/chapter4.tex [34] [35] [36
+being split [33]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [34])
+(chapters/chapter4.tex [35] [36
 
 ]
 Chương 4.
@@ -3468,10 +3474,10 @@ L3 programming layer <2025-12-24>
  ***********
  ) 
 Here is how much of TeX's memory you used:
- 34703 strings out of 402987
- 731417 string characters out of 5447283
+ 34752 strings out of 402987
+ 732826 string characters out of 5447283
  1643823 words of memory out of 5000000
- 62787 multiletter control sequences out of 15000+600000
+ 62829 multiletter control sequences out of 15000+600000
  637926 words of font info for 130 fonts, out of 8000000 for 9000
  1348 hyphenation exceptions out of 8191
  86i,11n,104p,1003b,2018s stack positions out of 10000i,1000n,20000p,200000b,200000s

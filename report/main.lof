@@ -10,7 +10,7 @@
 \contentsline {figure}{\numberline {3.6}{\ignorespaces Sequence Diagram — luồng chuyển kho 2 bước (Outbound/Inbound)}}{23}{figure.3.6}%
 \contentsline {figure}{\numberline {3.7}{\ignorespaces Sequence Diagram — luồng kiểm kho \& sinh bút toán điều chỉnh}}{24}{figure.3.7}%
 \contentsline {figure}{\numberline {3.8}{\ignorespaces State Diagram — vòng đời đơn hàng (Order State Machine)}}{25}{figure.3.8}%
-\contentsline {figure}{\numberline {3.9}{\ignorespaces Sequence Diagram — luồng giữ chỗ tồn kho (Stock Reservation)}}{26}{figure.3.9}%
-\contentsline {figure}{\numberline {3.10}{\ignorespaces Sequence Diagram — luồng thanh toán nhanh tại POS (Fast Checkout)}}{27}{figure.3.10}%
+\contentsline {figure}{\numberline {3.9}{\ignorespaces Sequence Diagram — luồng giữ chỗ tồn kho (Stock Reservation)}}{27}{figure.3.9}%
+\contentsline {figure}{\numberline {3.10}{\ignorespaces Sequence Diagram — luồng thanh toán nhanh tại POS (Fast Checkout)}}{28}{figure.3.10}%
 \addvspace {10\p@ }
 \addvspace {10\p@ }
