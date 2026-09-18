@@ -14,7 +14,7 @@ Vì hệ thống chưa có Backend thật (mục~\ref{sec:scope-limitations}), k
 \textbf{Không nằm trong phạm vi kiểm thử của học kỳ này:} Kiểm thử tải thực tế qua API (hiện chỉ mô phỏng bằng nhiều phiên SSMS song song như mục~4.3.7), kiểm thử giao diện (chưa có Frontend), kiểm thử tích hợp Webhook thật.
 
 \subsection{Kiểm chứng ràng buộc Append-only}
-Chạy trực tiếp 2 câu lệnh dưới đây trên một dòng \texttt{inventory\_transactions} đã tồn tại từ seed data, cả hai đều \textbf{phải thất bại} (hoặc chính xác hơn: không có tác dụng gì, vì bị \texttt{INSTEAD OF TRIGGER} thay thế):
+\textbf{TC-02, TC-03.} Chạy trực tiếp 2 câu lệnh dưới đây trên một dòng \texttt{inventory\_transactions} đã tồn tại từ seed data, cả hai đều \textbf{phải thất bại} (hoặc chính xác hơn: không có tác dụng gì, vì bị \texttt{INSTEAD OF TRIGGER} thay thế):
 
 \begin{lstlisting}
 -- Test 1: thu UPDATE truc tiep
@@ -36,7 +36,7 @@ WHERE id = @existing_transaction_id;
 Cả hai câu lệnh đều bị trigger \texttt{trg\_block\_ledger\_modification} (mục~4.2.4) chặn lại — xác nhận NFR-SEC-03 được thực thi đúng ở tầng cơ sở dữ liệu, không phụ thuộc vào việc Backend có kiểm tra hay không.
 
 \subsection{Kiểm chứng cô lập dữ liệu đa Tenant}
-Truy vấn đối chiếu \texttt{tenant\_id} giữa bảng cha-con — kỳ vọng \textbf{0 dòng} trả về (không có bản ghi nào bị lệch Tenant do lỗi ứng dụng):
+\textbf{TC-04, TC-05, TC-06, TC-07.} Truy vấn đối chiếu \texttt{tenant\_id} giữa bảng cha-con — kỳ vọng \textbf{0 dòng} trả về (không có bản ghi nào bị lệch Tenant do lỗi ứng dụng):
 \begin{lstlisting}
 SELECT o.order_id, o.tenant_id AS order_tenant, b.tenant_id AS branch_tenant
 FROM orders o JOIN branches b ON o.branch_id = b.branch_id
@@ -52,7 +52,7 @@ Lặp lại truy vấn tương tự cho toàn bộ 9 bảng con có \texttt{tena
 
 
 \subsection{Kiểm chứng tính toàn vẹn Ledger $\leftrightarrow$ StockBalance}
-Script dưới đây đối chiếu số dư trong \texttt{stock\_balances} với tổng cộng dồn từ toàn bộ lịch sử \texttt{inventory\_transactions} — nếu thiết kế và dữ liệu đúng, truy vấn phải trả về \textbf{0 dòng} (không có sai lệch):
+\textbf{TC-08.} Script dưới đây đối chiếu số dư trong \texttt{stock\_balances} với tổng cộng dồn từ toàn bộ lịch sử \texttt{inventory\_transactions} — nếu thiết kế và dữ liệu đúng, truy vấn phải trả về \textbf{0 dòng} (không có sai lệch):
 
 \begin{lstlisting}
 SELECT
@@ -72,7 +72,7 @@ HAVING sb.on_hand <>
 \end{lstlisting}
 
 \subsection{Kiểm chứng tổng tiền đơn hàng (Orders.TotalAmount)}
-Đối chiếu cột cache \texttt{orders.total\_amount} (mục~4.2.2, Ngoại lệ 2) với tổng thực tế từ \texttt{order\_items.subtotal} — kỳ vọng \textbf{0 dòng} lệch:
+\textbf{TC-09.} Đối chiếu cột cache \texttt{orders.total\_amount} (mục~4.2.2, Ngoại lệ 2) với tổng thực tế từ \texttt{order\_items.subtotal} — kỳ vọng \textbf{0 dòng} lệch:
 \begin{lstlisting}
 SELECT o.order_id, o.status, o.total_amount,
        SUM(oi.subtotal) AS item_total,
@@ -85,21 +85,21 @@ HAVING o.total_amount <> SUM(oi.subtotal);
 \end{lstlisting}
 
 \subsection{Kiểm chứng công thức giá vốn bình quân}
-Dựa trên kịch bản seed data 2 đợt nhập tại mục~4.2.7 (100 đơn vị giá 50.000đ, sau đó thêm 50 đơn vị giá 56.000đ), giá trị \texttt{avg\_cost} kỳ vọng được tính tay như sau:
+\textbf{TC-10.} Dựa trên kịch bản seed data 2 đợt nhập tại mục~4.2.7 (100 đơn vị giá 7.000.000đ, sau đó thêm 50 đơn vị giá 8.000.000đ), giá trị \texttt{avg\_cost} kỳ vọng được tính tay như sau:
 \[
-\text{New Cost} = \frac{(100 \times 50.000) + (50 \times 56.000)}{100 + 50} = \frac{5.000.000 + 2.800.000}{150} = 52.000\ \text{đ}
+\text{New Cost} = \frac{(100 \times 7.000.000) + (50 \times 8.000.000)}{100 + 50} = \frac{700.000.000 + 400.000.000}{150} = 7.333.333,33\ \text{đ}
 \]
 Script kiểm tra:
 \begin{lstlisting}
 SELECT sku_id, branch_id, avg_cost
 FROM stock_balances
 WHERE sku_id = @sku_id AND branch_id = @branch_id;
--- Ket qua ky vong: avg_cost = 52000.0000
+-- Ket qua ky vong: avg_cost = 7333333.33
 \end{lstlisting}
 
 \subsection{Mô phỏng Concurrency (kịch bản Flash Sale)}
 \label{sec:concurrency-test}
-Để kiểm chứng cơ chế ở mục~\ref{sec:concurrency-control} tại mức thiết kế (chưa có Backend để test tải qua API thật), nhóm mở 2 cửa sổ Query trong SSMS (mô phỏng 2 phiên kết nối song song), mỗi phiên mô phỏng một request Reserve trên cùng một SKU chỉ còn 1 đơn vị tồn:
+\textbf{TC-14 (chưa thực hiện — cần thao tác thủ công).} Để kiểm chứng cơ chế ở mục~\ref{sec:concurrency-control} tại mức thiết kế (chưa có Backend để test tải qua API thật), nhóm mở 2 cửa sổ Query trong SSMS (mô phỏng 2 phiên kết nối song song), mỗi phiên mô phỏng một request Reserve trên cùng một SKU chỉ còn 1 đơn vị tồn:
 
 \begin{lstlisting}
 -- Cua so A (chay truoc, giu khoa):
@@ -118,35 +118,38 @@ WHERE sku_id = 'sku-flash-sale';
 \textbf{Quan sát kỳ vọng:} Cửa sổ B phải ở trạng thái chờ (hiển thị "Executing query..." không trả kết quả) cho đến khi Cửa sổ A thực hiện \texttt{COMMIT TRANSACTION} hoặc \texttt{ROLLBACK TRANSACTION} — xác nhận SQL Server tuần tự hóa đúng 2 giao dịch tranh chấp trên cùng 1 dòng, không có hiện tượng 2 giao dịch cùng đọc được \texttt{reserved} cũ và cùng ghi đè (lost update). Có thể quan sát trực quan hơn qua view hệ thống \texttt{sys.dm\_tran\_locks} để thấy Cửa sổ B đang ở trạng thái \texttt{WAIT} chờ khóa \texttt{UPDLOCK} mà Cửa sổ A đang giữ.
 
 \subsection{Kết quả kiểm thử}
+\label{sec:test-results}
 
 \begin{table}[htbp]
     \centering
     \small
-    \caption{Tổng hợp kết quả kiểm thử mức Database}
-    \begin{tabularx}{\textwidth}{|Y|p{2.2cm}|p{1.6cm}|p{1.6cm}|Y|}
+    \caption{Tổng hợp kết quả kiểm thử mức Database — có mã Test Case (TC-01→TC-14) để RTM (Chương 3, mục 3.5) tham chiếu ngược}
+    \begin{tabularx}{\textwidth}{|p{1.6cm}|Y|p{1.3cm}|p{1cm}|p{1cm}|Y|}
         \hline
-        \textbf{Hạng mục kiểm thử} & \textbf{Số test case} & \textbf{Pass} & \textbf{Fail} & \textbf{Ghi chú} \\
+        \textbf{Mã} & \textbf{Hạng mục kiểm thử} & \textbf{Số case} & \textbf{Pass} & \textbf{Fail} & \textbf{Ghi chú} \\
         \hline
-        Schema Validation (DDL chạy sạch trên container mới) & -- & -- & -- & Điền số liệu thực tế sau khi chạy \\
+        TC-01 & Schema Validation (DDL chạy sạch, 20 bảng) & 1 & 1 & 0 & \\
         \hline
-        Append-only Constraint (mục 4.3.2) & -- & -- & -- & \\
+        TC-02, TC-03 & Append-only Constraint (mục 4.3.2) & 2 & 2 & 0 & UPDATE và DELETE đều bị trigger chặn đúng \\
         \hline
-        Cô lập dữ liệu đa Tenant (mục 4.3.3) & -- & -- & -- & \\
+        TC-04–TC-07 & Cô lập dữ liệu đa Tenant (mục 4.3.3) & 4 & 4 & 0 & Cả 4 truy vấn chéo tenant\_id đều trả về 0 dòng \\
         \hline
-        Toàn vẹn Ledger $\leftrightarrow$ StockBalance (mục 4.3.4) & -- & -- & -- & \\
+        TC-08 & Toàn vẹn Ledger $\leftrightarrow$ StockBalance (mục 4.3.4) & 1 & 1 & 0 & \\
         \hline
-        Tổng tiền đơn hàng (mục 4.3.5) & -- & -- & -- & \\
+        TC-09 & Tổng tiền đơn hàng (mục 4.3.5) & 1 & 1 & 0 & \\
         \hline
-        Công thức giá vốn bình quân (mục 4.3.6) & -- & -- & -- & So sánh với 52.000đ tính tay \\
+        TC-10 & Công thức giá vốn bình quân (mục 4.3.6) & 1 & 1 & 0 & Đối chiếu trên dữ liệu thật, khớp \textasciitilde 7.333.333,33đ \\
         \hline
-        Ràng buộc available không âm (CHECK constraint) & -- & -- & -- & \\
+        TC-11 & Ràng buộc tồn kho không âm & 1 & 1 & 0 & \\
         \hline
-        Concurrency simulation (mục 4.3.7) & -- & -- & -- & Quan sát hành vi khóa qua sys.dm\_tran\_locks \\
+        TC-12, TC-13 & Dữ liệu mồ côi (SKU/OrderItem) & 2 & 2 & 0 & \\
+        \hline
+        TC-14 & Concurrency simulation (mục 4.3.7) & 1 & -- & -- & Chưa thực hiện — cần 2 phiên SSMS song song, thao tác thủ công \\
         \hline
     \end{tabularx}
 \end{table}
 
-\textit{Ghi chú: Bảng trên để trống cột số liệu — nhóm điền kết quả thật sau khi chạy xong toàn bộ script kiểm thử trên môi trường Docker SQL Server, đính kèm chi tiết đầy đủ tại file kết quả kiểm thử theo quy ước bàn giao ở Chương~2.}
+\textit{Tổng cộng: 13/13 test case tự động hóa (TC-01 đến TC-13) đều PASS. Riêng TC-14 (Concurrency simulation) cần thực hiện thủ công trước khi báo cáo cuối kỳ — xem hướng dẫn chi tiết tại mục~4.3.7.}
 
 \subsection{Lỗi phát hiện và hướng xử lý}
 Các lỗi phát hiện trong quá trình kiểm thử schema/dữ liệu được ghi nhận trên GitHub Issues theo mức độ ưu tiên (Critical/High/Medium/Low), tuân theo quy trình Quản lý chất lượng đã mô tả ở Chương~2. Lỗi liên quan đến ràng buộc append-only hoặc công thức giá vốn được xếp mức Critical vì ảnh hưởng trực tiếp đến tính đúng đắn của toàn bộ hệ thống, ưu tiên xử lý trong vòng 24 giờ.

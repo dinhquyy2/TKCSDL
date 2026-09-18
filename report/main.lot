@@ -1,0 +1,35 @@
+\babel@toc {vietnamese}{}\relax 
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {1.1}{\ignorespaces Thông tin thành viên nhóm}}{1}{table.1.1}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {2.1}{\ignorespaces Bảng phân rã công việc và ước lượng nỗ lực}}{6}{table.2.1}%
+\contentsline {table}{\numberline {2.2}{\ignorespaces Danh sách rủi ro và phương án xử lý}}{7}{table.2.2}%
+\contentsline {table}{\numberline {2.3}{\ignorespaces Kế hoạch onboard công cụ/công nghệ}}{8}{table.2.3}%
+\contentsline {table}{\numberline {2.4}{\ignorespaces Kế hoạch bàn giao theo tuần (5 tuần)}}{8}{table.2.4}%
+\contentsline {table}{\numberline {2.5}{\ignorespaces Danh sách 14 hạng mục bàn giao cuối kỳ}}{9}{table.2.5}%
+\contentsline {table}{\numberline {2.6}{\ignorespaces Bảng phân công trách nhiệm}}{10}{table.2.6}%
+\contentsline {table}{\numberline {2.7}{\ignorespaces Kế hoạch giao tiếp trong dự án}}{11}{table.2.7}%
+\contentsline {table}{\numberline {2.8}{\ignorespaces Công cụ và hạ tầng sử dụng trong dự án}}{11}{table.2.8}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {3.1}{Bảng phân tích thành phần hệ thống theo mô đun chức năng}}{14}{table.3.1}%
+\contentsline {table}{\numberline {3.2}{Danh sách Actor của hệ thống}}{15}{table.3.2}%
+\contentsline {table}{\numberline {3.3}{Danh sách và mô tả Use Case}}{16}{table.3.3}%
+\contentsline {table}{\numberline {3.4}{Danh sách màn hình dự kiến (chưa thiết kế mockup chi tiết)}}{17}{table.3.4}%
+\contentsline {table}{\numberline {3.5}{Ma trận phân quyền theo vai trò (RBAC)}}{17}{table.3.5}%
+\contentsline {table}{\numberline {3.6}{Các chức năng không có màn hình (chạy nền/hệ thống)}}{18}{table.3.6}%
+\contentsline {table}{\numberline {3.7}{Tóm tắt các FR còn lại — nhóm FR-AUTH}}{20}{table.3.7}%
+\contentsline {table}{\numberline {3.8}{Tóm tắt các FR còn lại — nhóm FR-PROD}}{21}{table.3.8}%
+\contentsline {table}{\numberline {3.9}{Tóm tắt các FR còn lại — nhóm FR-POS}}{28}{table.3.9}%
+\contentsline {table}{\numberline {3.10}{Tóm tắt chức năng — nhóm FR-REP}}{28}{table.3.10}%
+\contentsline {table}{\numberline {3.11}{Tóm tắt chức năng — nhóm FR-SIM}}{28}{table.3.11}%
+\contentsline {table}{\numberline {3.12}{Danh sách quy tắc nghiệp vụ (Business Rules)}}{30}{table.3.12}%
+\contentsline {table}{\numberline {3.13}{Danh sách thông báo ứng dụng}}{30}{table.3.13}%
+\contentsline {table}{\numberline {3.14}{Bảng tóm tắt yêu cầu theo chức năng chính}}{31}{table.3.14}%
+\contentsline {table}{\numberline {3.15}{Bảng tổng hợp yêu cầu chức năng và phi chức năng theo ưu tiên}}{32}{table.3.15}%
+\contentsline {table}{\numberline {3.16}{Ma trận truy vết yêu cầu (RTM) — 30 FR + 11 NFR trọng yếu}}{34}{table.3.16}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {4.1}{Danh mục 20 thực thể triển khai trong schema SQL Server}}{39}{table.4.1}%
+\contentsline {table}{\numberline {4.2}{\ignorespaces Chiến lược backup/recovery đề xuất}}{45}{table.4.2}%
+\contentsline {table}{\numberline {4.3}{\ignorespaces Tổng hợp kết quả kiểm thử mức Database — có mã Test Case (TC-01→TC-14) để RTM (Chương 3, mục 3.5) tham chiếu ngược}}{50}{table.4.3}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {5.1}{\ignorespaces Đối chiếu kế hoạch và kết quả thực hiện}}{52}{table.5.1}%
