@@ -1,7 +1,6 @@
-This is XeTeX, Version 3.141592653-2.6-0.999997 (MiKTeX 25.12) (preloaded format=xelatex 2026.9.6)  19 SEP 2026 04:17
+This is XeTeX, Version 3.141592653-2.6-0.999997 (MiKTeX 25.12) (preloaded format=xelatex 2026.9.6)  19 SEP 2026 10:28
 entering extended mode
  restricted \write18 enabled.
- file:line:error style messages enabled.
  %&-line parsing enabled.
 **./main.tex
 (main.tex
@@ -2074,9 +2073,8 @@ Underfull \hbox (badness 10000) in alignment at lines 54--113
 [] [] [] []
  []
 
-chapters/ch3/02-user-requirements.tex:113: ignored error: Infinite glue shrinka
-ge found in box being split [15]) (chapters/ch3/03-functional-requirements.tex
-[16]
+ignored error: Infinite glue shrinkage found in box being split [15])
+(chapters/ch3/03-functional-requirements.tex [16]
 Underfull \hbox (badness 10000) in alignment at lines 11--15
 [] [] [] []
  []
@@ -2246,8 +2244,7 @@ Underfull \hbox (badness 10000) in alignment at lines 85--100
 [] [] [] []
  []
 
-chapters/ch3/03-functional-requirements.tex:100: ignored error: Infinite glue s
-hrinkage found in box being split [17]
+ignored error: Infinite glue shrinkage found in box being split [17]
 File: ../docs/ERD/Hinh_ERD_Physical.png Graphic file (type bmp)
 <../docs/ERD/Hinh_ERD_Physical.png>
 
@@ -2323,8 +2320,7 @@ Underfull \hbox (badness 10000) in alignment at lines 208--216
 [] [] []
  []
 
-chapters/ch3/03-functional-requirements.tex:216: ignored error: Infinite glue s
-hrinkage found in box being split [20]
+ignored error: Infinite glue shrinkage found in box being split [20]
 File: ../docs/Sequence/3.5.png Graphic file (type bmp)
 <../docs/Sequence/3.5.png>
  [21]
@@ -2557,8 +2553,7 @@ Underfull \hbox (badness 10000) in alignment at lines 56--79
 [] [] [] [] []
  []
 
-chapters/ch3/05-requirement-appendix.tex:79: ignored error: Infinite glue shrin
-kage found in box being split [30])
+ignored error: Infinite glue shrinkage found in box being split [30])
 Underfull \hbox (badness 10000) in alignment at lines 20--24
 [] [] [] []
  []
@@ -3138,10 +3133,8 @@ Underfull \hbox (badness 10000) in alignment at lines 110--175
 [] [] [] []
  []
 
-chapters/chapter3.tex:175: ignored error: Infinite glue shrinkage found in box 
-being split [32]
-chapters/chapter3.tex:175: ignored error: Infinite glue shrinkage found in box 
-being split [33]
+ignored error: Infinite glue shrinkage found in box being split [32]
+ignored error: Infinite glue shrinkage found in box being split [33]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [34])
@@ -3348,8 +3341,7 @@ Underfull \hbox (badness 10000) in alignment at lines 16--59
 [] [] []
  []
 
-chapters/ch4/02-main-feature-implementation.tex:59: ignored error: Infinite glu
-e shrinkage found in box being split [38]
+ignored error: Infinite glue shrinkage found in box being split [38]
 Underfull \hbox (badness 2951) in paragraph at lines 75--76
 []\TU/TimesNewRoman(0)/m/n/12 Bảng tổng hợp candidate key cho toàn bộ 20 quan h
 ệ được trình bày đầy đủ trong tài liệu
@@ -3476,7 +3468,7 @@ L3 programming layer <2025-12-24>
 Here is how much of TeX's memory you used:
  34752 strings out of 402987
  732826 string characters out of 5447283
- 1643823 words of memory out of 5000000
+ 1643825 words of memory out of 5000000
  62829 multiletter control sequences out of 15000+600000
  637926 words of font info for 130 fonts, out of 8000000 for 9000
  1348 hyphenation exceptions out of 8191
