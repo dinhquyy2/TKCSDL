@@ -3,6 +3,10 @@
 \subsection{Hạn chế hiện tại}
 Kế thừa các giới hạn đã nêu ở Chương~1 (LI-1, LI-2, LI-3), nhóm ghi nhận các hạn chế cụ thể sau khi hoàn thành thiết kế và triển khai cơ sở dữ liệu:
 \begin{itemize}
+    \begin{itemize}
+    \item \textbf{UML Class Diagram cần vẽ lại:} Bản nháp đầu thiếu 8/20 bảng quan trọng, cần vẽ lại theo Entity Catalog (Chương~4, mục~4.2.1).
+    \item \textbf{Use Case Diagram cần đối chiếu lại phân quyền:} Chưa khớp Bảng RBAC (mục~3.3.3.3).
+    \item \textbf{Đặc tả API chưa đầy đủ:} Mới có khung mẫu, cần mở rộng đủ theo Chương~3.
     \item \textbf{Chưa có phần mềm chạy được đầu-cuối:} Toàn bộ chức năng ở Chương 3 mới tồn tại ở dạng đặc tả và schema database, chưa thể demo trực tiếp trên giao diện người dùng.
     \item \textbf{Chưa kiểm thử concurrency thực tế:} Cơ chế chống bán vượt tồn (Anti-Oversell) mới được kiểm chứng ở mức mô phỏng SQL, chưa đo lường được dưới tải thật của nhiều request API đồng thời.
     \item \textbf{Webhook Simulator chỉ ở mức thiết kế:} Chưa có endpoint thật để nhận payload từ Shopee/TikTok Shop/Lazada.

@@ -15,17 +15,21 @@ Trong thời hạn 5 tuần, nhóm đã hoàn thành 14 hạng mục bàn giao �
         \hline
         Architecture Design Document & Hoàn thành & \\
         \hline
-        ERD, UML Class Diagram, Use Case Diagram & \textit{(điền trạng thái)} & Cần chèn hình theo Phụ lục hình ảnh \\
+                ERD & Hoàn thành & Đủ 20 thực thể, khớp schema.sql thật \\
         \hline
-        Sequence Diagram (6 luồng nghiệp vụ) & \textit{(điền trạng thái)} & \\
+        UML Class Diagram & Đang thực hiện & Bản nháp đầu còn thiếu 8/20 bảng (Ledger, SalesChannel, Stocktake...), cần vẽ lại theo Entity Catalog (mục 4.2.1) \\
         \hline
-        Đặc tả API (Swagger/Postman) & \textit{(điền trạng thái)} & \\
+        Use Case Diagram & Đang thực hiện & Cần đối chiếu lại phân quyền quản lý sản phẩm cho khớp Bảng RBAC (mục 3.3.3.3) \\
         \hline
-        Script DDL SQL Server & \textit{(điền trạng thái)} & \\
+        Sequence Diagram (6 luồng nghiệp vụ) & Đã có mã nguồn & Đủ mã PlantUML cho 6 luồng, đã qua nhiều vòng review logic, chờ xuất hình chính thức \\
         \hline
-        Trigger/rule append-only cho Ledger & \textit{(điền trạng thái)} & Đã kiểm chứng bằng script tự test (Chương 4) \\
+        Đặc tả API (Swagger/Postman) & Đang thực hiện & Đã có khung OpenAPI mẫu (6/\textasciitilde30 endpoint tiêu biểu), cần mở rộng đủ \\
         \hline
-        Seed data \& script kiểm tra toàn vẹn & \textit{(điền trạng thái)} & \\
+        Script DDL SQL Server & Hoàn thành & Đã chạy thật trên SQL Server 2022, tạo đủ 20 bảng \\
+        \hline
+        Trigger/rule append-only cho Ledger & Hoàn thành & Đã kiểm chứng PASS thật (TC-02, TC-03) \\
+        \hline
+        Seed data \& script kiểm tra toàn vẹn & Hoàn thành & Đã chạy thật, 13/13 test case (TC-01→TC-13) PASS \\
         \hline
         Backend API (.NET) & Chưa thực hiện & Ngoài phạm vi bàn giao học kỳ này, dời sang giai đoạn tiếp theo \\
         \hline
@@ -34,8 +38,7 @@ Trong thời hạn 5 tuần, nhóm đã hoàn thành 14 hạng mục bàn giao �
     \end{tabularx}
 \end{table}
 
-\textit{Ghi chú: Cột "Trạng thái" để trống — nhóm điền "Hoàn thành"/"Đang thực hiện" theo tiến độ thực tế trước khi nộp báo cáo cuối kỳ.}
-
+\textit{Ghi chú: 8/13 hạng mục đã Hoàn thành với bằng chứng chạy thật (Chương 4, mục~\ref{sec:test-results}); 3 hạng mục đang hoàn thiện — chi tiết xem mục 5.3.1; 2 hạng mục ngoài phạm vi theo mục~\ref{sec:scope-limitations}.}
 \subsection{Đánh giá theo yêu cầu phi chức năng}
 Vì chưa có Backend thật, các chỉ tiêu phi chức năng về hiệu năng thời gian thực (API Response Time, khả năng chịu tải) chưa thể đo lường trực tiếp. Nhóm đã kiểm chứng được ở mức thiết kế/dữ liệu:
 \begin{itemize}

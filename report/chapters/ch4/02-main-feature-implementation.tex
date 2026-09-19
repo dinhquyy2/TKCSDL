@@ -48,7 +48,7 @@ Toàn bộ 20 thực thể được thiết kế từ ERD (Chương 3, mục 3.2
     \hline
     PurchaseReceipt & Phiếu nhập hàng & ReceiptId (PK), TenantId, BranchId, SupplierId, Status \\
     \hline
-    PurchaseReceiptItem & Chi tiết dòng hàng trong phiếu nhập & ReceiptItemId (PK), SKUId, Quantity, UnitCost \\
+    PurchaseReceiptItem & Chi tiết dòng hàng trong phiếu nhập & ReceiptItemId (PK), SKUId, Quantity, CostPrice \\
     \hline
     StockTransfer & Phiếu chuyển kho giữa 2 chi nhánh & TransferId (PK), FromBranchId, ToBranchId, Status \\
     \hline
@@ -146,7 +146,9 @@ CREATE TABLE sku_variants (
     sku_id      UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
     tenant_id   UNIQUEIDENTIFIER NOT NULL FOREIGN KEY REFERENCES tenants(tenant_id),
     product_id  UNIQUEIDENTIFIER NOT NULL FOREIGN KEY REFERENCES products(product_id),
-    sku_code    VARCHAR(50) NOT NULL,
+        sku_code    VARCHAR(50) NOT NULL,
+    color       NVARCHAR(50) NOT NULL DEFAULT N'',
+    size        NVARCHAR(50) NOT NULL DEFAULT N'',
     price       DECIMAL(15,2) NOT NULL CHECK (price >= 0),
     created_at  DATETIME NOT NULL DEFAULT GETDATE(),
     CONSTRAINT uq_sku_tenant_code UNIQUE (tenant_id, sku_code),
