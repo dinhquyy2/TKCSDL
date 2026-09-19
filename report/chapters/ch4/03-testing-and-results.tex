@@ -51,7 +51,7 @@ WHERE sb.tenant_id <> sv.tenant_id;
 Lặp lại truy vấn tương tự cho toàn bộ 9 bảng con có \texttt{tenant\_id} denormalized (mục~4.2.2, Ngoại lệ 1) để đảm bảo tính nhất quán được duy trì trong suốt vòng đời dữ liệu.
 
 
-\subsection{Kiểm chứng tính toàn vẹn Ledger $\leftrightarrow$ StockBalance}
+\subsection{\texorpdfstring{Kiểm chứng tính toàn vẹn Ledger $\leftrightarrow$ StockBalance}{Kiểm chứng tính toàn vẹn Ledger <-> StockBalance}}
 \textbf{TC-08.} Script dưới đây đối chiếu số dư trong \texttt{stock\_balances} với tổng cộng dồn từ toàn bộ lịch sử \texttt{inventory\_transactions} — nếu thiết kế và dữ liệu đúng, truy vấn phải trả về \textbf{0 dòng} (không có sai lệch):
 
 \begin{lstlisting}

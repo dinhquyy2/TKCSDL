@@ -1,0 +1,29 @@
+PWD d:\TKCSDL\report
+INPUT C:\Users\Lê Đình Quý\AppData\Local\Programs\MiKTeX\miktex\data\le\pdftex\pdflatex.fmt
+INPUT d:\TKCSDL\report\main.tex
+OUTPUT main.log
+INPUT C:\Users\Lê Đình Quý\AppData\Local\Programs\MiKTeX\tex\latex\base\book.cls
+INPUT C:\Users\Lê Đình Quý\AppData\Local\Programs\MiKTeX\tex\latex\base\book.cls
+INPUT C:\Users\Lê Đình Quý\AppData\Local\Programs\MiKTeX\tex\latex\base\bk12.clo
+INPUT C:\Users\Lê Đình Quý\AppData\Local\Programs\MiKTeX\tex\latex\base\bk12.clo
+INPUT C:\Users\Lê Đình Quý\AppData\Local\Programs\MiKTeX\tex\latex\base\bk12.clo
+INPUT C:\Users\Lê Đình Quý\AppData\Local\Programs\MiKTeX\fonts\tfm\public\cm\cmr12.tfm
+INPUT C:\Program Files\MiKTeX\tex\latex\geometry\geometry.sty
+INPUT C:\Program Files\MiKTeX\tex\latex\geometry\geometry.sty
+INPUT C:\Users\Lê Đình Quý\AppData\Local\Programs\MiKTeX\tex\latex\graphics\keyval.sty
+INPUT C:\Users\Lê Đình Quý\AppData\Local\Programs\MiKTeX\tex\latex\graphics\keyval.sty
+INPUT C:\Users\Lê Đình Quý\AppData\Local\Programs\MiKTeX\tex\generic\iftex\ifvtex.sty
+INPUT C:\Users\Lê Đình Quý\AppData\Local\Programs\MiKTeX\tex\generic\iftex\ifvtex.sty
+INPUT C:\Users\Lê Đình Quý\AppData\Local\Programs\MiKTeX\tex\generic\iftex\iftex.sty
+INPUT C:\Users\Lê Đình Quý\AppData\Local\Programs\MiKTeX\tex\generic\iftex\iftex.sty
+INPUT C:\Program Files\MiKTeX\tex\latex\geometry\geometry.cfg
+INPUT C:\Program Files\MiKTeX\tex\latex\geometry\geometry.cfg
+INPUT C:\Program Files\MiKTeX\tex\latex\geometry\geometry.cfg
+INPUT C:\Users\Lê Đình Quý\AppData\Local\Programs\MiKTeX\tex\latex\fontspec\fontspec.sty
+INPUT C:\Users\Lê Đình Quý\AppData\Local\Programs\MiKTeX\tex\latex\fontspec\fontspec.sty
+INPUT C:\Users\Lê Đình Quý\AppData\Local\Programs\MiKTeX\tex\latex\l3packages\xparse\xparse.sty
+INPUT C:\Users\Lê Đình Quý\AppData\Local\Programs\MiKTeX\tex\latex\l3packages\xparse\xparse.sty
+INPUT C:\Users\Lê Đình Quý\AppData\Local\Programs\MiKTeX\tex\latex\l3kernel\expl3.sty
+INPUT C:\Users\Lê Đình Quý\AppData\Local\Programs\MiKTeX\tex\latex\l3kernel\expl3.sty
+INPUT C:\Users\Lê Đình Quý\AppData\Local\Programs\MiKTeX\tex\latex\l3backend\l3backend-pdftex.def
+INPUT C:\Users\Lê Đình Quý\AppData\Local\Programs\MiKTeX\tex\latex\l3backend\l3backend-pdftex.def

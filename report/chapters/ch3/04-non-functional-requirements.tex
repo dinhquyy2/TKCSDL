@@ -16,7 +16,7 @@
 \subsubsection{Reliability \& Data Integrity}
 \begin{itemize}
     \item Tuân thủ ACID: chuỗi Order Creation → Reserve → Deduct bắt buộc thực thi trong một giao dịch cơ sở dữ liệu nguyên tử, rollback toàn bộ nếu thất bại.
-    \item Tính kiểm toán của Ledger: bảng InventoryLedger là append-only tuyệt đối, không cho phép UPDATE/DELETE; mọi điều chỉnh phải qua bút toán bù trừ.
+    \item Tính kiểm toán của Ledger: bảng InventoryTransaction là append-only tuyệt đối, không cho phép UPDATE/DELETE; mọi điều chỉnh phải qua bút toán bù trừ.
     \item Mục tiêu uptime 99.5\% trong giờ hoạt động (7:00--22:00) cho hệ thống hoàn chỉnh.
 \end{itemize}
 
@@ -29,7 +29,7 @@
 \subsubsection{Multi-tenancy \& Scalability}
 \begin{itemize}
     \item Mô hình Shared Database, Separate Schema/TenantId. Mọi bảng nghiệp vụ đều có TenantId, bắt buộc dùng EF Core Global Query Filters để đảm bảo không rò rỉ dữ liệu giữa các tenant.
-    \item Tối ưu index trên (TenantId, CreatedAt) và (TenantId, SKUId) cho bảng InventoryLedger và Orders để giữ hiệu năng truy vấn ở quy mô hàng triệu dòng ledger.
+    \item Tối ưu index trên (TenantId, CreatedAt) và (TenantId, SKUId) cho bảng InventoryTransaction và Orders để giữ hiệu năng truy vấn ở quy mô hàng triệu dòng ledger.
 \end{itemize}
 
 \subsubsection{Usability}
