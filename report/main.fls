@@ -355,8 +355,23 @@ INPUT C:\Program Files\MiKTeX\tex\latex\microtype\mt-cmr.cfg
 INPUT C:\Users\Lê Đình Quý\AppData\Local\Programs\MiKTeX\fonts\tfm\public\cm\cmr8.tfm
 INPUT C:\Users\Lê Đình Quý\AppData\Local\Programs\MiKTeX\fonts\tfm\public\cm\cmr6.tfm
 OUTPUT main.xdv
+INPUT .\main.toc
+INPUT .\main.toc
+INPUT main.toc
+INPUT C:\Users\Lê Đình Quý\AppData\Local\Programs\MiKTeX\fonts\tfm\public\cm\cmmi12.tfm
+INPUT C:\Users\Lê Đình Quý\AppData\Local\Programs\MiKTeX\fonts\tfm\public\cm\cmsy10.tfm
+INPUT C:\Users\Lê Đình Quý\AppData\Local\Programs\MiKTeX\fonts\tfm\public\cm\cmex10.tfm
+INPUT C:\Users\Lê Đình Quý\AppData\Local\Programs\MiKTeX\fonts\tfm\public\amsfonts\symbols\msam10.tfm
+INPUT C:\Users\Lê Đình Quý\AppData\Local\Programs\MiKTeX\fonts\tfm\public\amsfonts\symbols\msbm10.tfm
+INPUT C:\Users\Lê Đình Quý\AppData\Local\Programs\MiKTeX\fonts\tfm\public\cm\cmr12.tfm
 OUTPUT main.toc
+INPUT .\main.lof
+INPUT .\main.lof
+INPUT main.lof
 OUTPUT main.lof
+INPUT .\main.lot
+INPUT .\main.lot
+INPUT main.lot
 OUTPUT main.lot
 INPUT .\chapters\chapter1.tex
 INPUT .\chapters\chapter1.tex
@@ -426,9 +441,9 @@ INPUT ..\docs\UML\KienTrucTongThe.drawio.png
 INPUT .\chapters\ch3\02-user-requirements.tex
 INPUT .\chapters\ch3\02-user-requirements.tex
 INPUT chapters\ch3\02-user-requirements.tex
-INPUT ..\docs\UML\Use_Case.drawio (2).png
-INPUT ..\docs\UML\Use_Case.drawio (2).png
-INPUT ..\docs\UML\Use_Case.drawio (2).png
+INPUT ..\docs\UML\UseCase_TongQuat.png
+INPUT ..\docs\UML\UseCase_TongQuat.png
+INPUT ..\docs\UML\UseCase_TongQuat.png
 INPUT .\chapters\ch3\03-functional-requirements.tex
 INPUT .\chapters\ch3\03-functional-requirements.tex
 INPUT chapters\ch3\03-functional-requirements.tex
@@ -473,12 +488,6 @@ INPUT chapters\ch4\01-environment-and-technologies.tex
 INPUT .\chapters\ch4\02-main-feature-implementation.tex
 INPUT .\chapters\ch4\02-main-feature-implementation.tex
 INPUT chapters\ch4\02-main-feature-implementation.tex
-INPUT C:\Users\Lê Đình Quý\AppData\Local\Programs\MiKTeX\fonts\tfm\public\cm\cmmi12.tfm
-INPUT C:\Users\Lê Đình Quý\AppData\Local\Programs\MiKTeX\fonts\tfm\public\cm\cmsy10.tfm
-INPUT C:\Users\Lê Đình Quý\AppData\Local\Programs\MiKTeX\fonts\tfm\public\cm\cmex10.tfm
-INPUT C:\Users\Lê Đình Quý\AppData\Local\Programs\MiKTeX\fonts\tfm\public\amsfonts\symbols\msam10.tfm
-INPUT C:\Users\Lê Đình Quý\AppData\Local\Programs\MiKTeX\fonts\tfm\public\amsfonts\symbols\msbm10.tfm
-INPUT C:\Users\Lê Đình Quý\AppData\Local\Programs\MiKTeX\fonts\tfm\public\cm\cmr12.tfm
 INPUT .\chapters\ch4\03-testing-and-results.tex
 INPUT .\chapters\ch4\03-testing-and-results.tex
 INPUT chapters\ch4\03-testing-and-results.tex

@@ -1,10 +1,10 @@
 # Fdb version 4
-["xdvipdfmx"] 0 "main.xdv" "main.pdf" "main" 0 -1
-  "main.xdv" 1789799993 1337904 5c798e45a0c436bbf71b14d34349dd0b "xelatex"
+["xdvipdfmx"] 1790395877.87039 "main.xdv" "main.pdf" "main" 1790395882.35002 0
+  "main.xdv" 1790395877 1514132 00397eae1b5982d8d96d4d13ce46ad0e "xelatex"
   (generated)
   "main.pdf"
   (rewritten before read)
-["xelatex"] 1789799984.81244 "main.tex" "main.xdv" "main" 1789799994.34525 2
+["xelatex"] 1790395872.96833 "main.tex" "main.xdv" "main" 1790395882.34315 0
   "../docs/ERD/Hinh_ERD_Physical.png" 1789743595 603149 f3da3ffdfc4796239773e355a6743d6d ""
   "../docs/Sequence/3.5.png" 1789762712 40621 eb7be3b08f246edcfe91325d66bd4121 ""
   "../docs/Sequence/3.6.png" 1789764748 49985 3c6a4a48f0cb72e38921b2f603467f28 ""
@@ -14,7 +14,7 @@
   "../docs/Sequence/4.0.png" 1789764498 36020 ed34252d94fcbbabb28b73c93a92c262 ""
   "../docs/UML/KienTrucTongThe.drawio.png" 1789799607 971517 036fef58536007bcb7b23c5712652988 ""
   "../docs/UML/UML_ClassDiagram.drawio (1).png" 1789799607 1461521 5bc483ba4dccd39f141391ad537bac7b ""
-  "../docs/UML/Use_Case.drawio (2).png" 1789799607 1593987 c9baaa4b7a07a2f396b65b34f2ce7475 ""
+  "../docs/UML/UseCase_TongQuat.png" 1790395454 2166210 caf95b766980425d583a534624cae5da ""
   "C:/Program Files/MiKTeX/tex/generic/bigintcalc/bigintcalc.sty" 1576433602 40635 c40361e206be584d448876bba8a64a3b ""
   "C:/Program Files/MiKTeX/tex/generic/bitset/bitset.sty" 1575926576 33961 6b5c75130e435b2bfdb9f480a09a39f9 ""
   "C:/Program Files/MiKTeX/tex/generic/gettitlestring/gettitlestring.sty" 1576433666 8371 9d55b8bd010bc717624922fb3477d92e ""
@@ -61,7 +61,7 @@
   "chapters/ch2/05-project-communications.tex" 1789761165 1170 4aef102ca8485e561977acd07aaaa22d ""
   "chapters/ch2/06-configuration-management.tex" 1789761165 2398 c16d83019a8d32bd8c5db54d4744e400 ""
   "chapters/ch3/01-product-overview.tex" 1789799979 3503 2492cd486965008f005d929624ccb187 ""
-  "chapters/ch3/02-user-requirements.tex" 1789799979 5976 375a8113b60425465f0251894a099704 ""
+  "chapters/ch3/02-user-requirements.tex" 1790395845 6012 6d05fbd5bfac6d6aa5ee7da409673996 ""
   "chapters/ch3/03-functional-requirements.tex" 1789799979 24783 1e8090a74de102063d5a7ed81f3788bc ""
   "chapters/ch3/04-non-functional-requirements.tex" 1789790938 3224 5f32256199c3a3fb234150176a980fcf ""
   "chapters/ch3/05-requirement-appendix.tex" 1789790971 4591 5fc22d906b4550016fb78f8559db88d6 ""
@@ -70,17 +70,17 @@
   "chapters/ch4/03-testing-and-results.tex" 1789791613 10194 4dd05e85b1db55a940e511ecbda02e55 ""
   "chapters/ch5/01-system-deployment.tex" 1789761166 2073 6743b3d7d2b09b352243ef3250d14bbf ""
   "chapters/ch5/02-achieved-results-evaluation.tex" 1789791124 4208 0c201fd5fedda89ecf940d144064cade ""
-  "chapters/ch5/03-limitations-and-future-development.tex" 1789791169 2887 933d86aa0c5803937fd0b3341ffabb27 ""
+  "chapters/ch5/03-limitations-and-future-development.tex" 1790395870 2867 0f5968c10594a18234ef395f0d281a0b ""
   "chapters/chapter1.tex" 1789761165 344 b0a37c97f6e53a2417c9ed11ccb0b8c6 ""
   "chapters/chapter2.tex" 1789761165 350 7515b35a27a8b69e314ff7826496cbf8 ""
   "chapters/chapter3.tex" 1789761165 15631 cc2c4039f789f4ed09e51c6af25af5b2 ""
   "chapters/chapter4.tex" 1789761165 728 eab0c55672bc9eb5db1fdb43ffc225e5 ""
   "chapters/chapter5.tex" 1789761165 242 4ed36dc820f6d842d92f880824e46652 ""
-  "main.aux" 1789799993 34014 413bbb7e75955882e46c8044907e807b "xelatex"
-  "main.lof" 1789799993 1545 a651dfb0c5fb407fa651345066b4cfc1 "xelatex"
-  "main.lot" 1789799993 3556 ee7a83934ad5fe54c8e0250c34226368 "xelatex"
+  "main.aux" 1790395877 34015 5962193e74c7aedb03cc1b10bcad8109 "xelatex"
+  "main.lof" 1790395877 1545 a651dfb0c5fb407fa651345066b4cfc1 "xelatex"
+  "main.lot" 1790395877 3556 ee7a83934ad5fe54c8e0250c34226368 "xelatex"
   "main.tex" 1789791613 3660 22f2e49f4345c931ed2237f9f269228a ""
-  "main.toc" 1789799993 15625 2093827f1b38c3f8e39ee93bfec79592 "xelatex"
+  "main.toc" 1790395877 15625 2ba8809dbf1282d68cb255871b49a51c "xelatex"
   (generated)
   "main.aux"
   "main.lof"
