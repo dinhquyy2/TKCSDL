@@ -7,6 +7,14 @@
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:database\\ledger_constraints.sql||{B5A506EB-11BE-4782-9A18-21265C2CA0B4}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\TKCSDL\\database\\integrity_check.sql||{B5A506EB-11BE-4782-9A18-21265C2CA0B4}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:database\\integrity_check.sql||{B5A506EB-11BE-4782-9A18-21265C2CA0B4}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\TKCSDL\\database\\seed_data.sql||{B5A506EB-11BE-4782-9A18-21265C2CA0B4}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:database\\seed_data.sql||{B5A506EB-11BE-4782-9A18-21265C2CA0B4}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\TKCSDL\\database\\schema.sql||{B5A506EB-11BE-4782-9A18-21265C2CA0B4}",
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:database\\schema.sql||{B5A506EB-11BE-4782-9A18-21265C2CA0B4}"
     }
@@ -18,31 +26,55 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 2,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "ledger_constraints.sql - localhost.OISM (DQUY\\L\u00EA \u0110\u00ECnh Qu\u00FD (81))",
-              "DocumentMoniker": "D:\\TKCSDL\\database\\ledger_constraints.sql",
-              "RelativeDocumentMoniker": "database\\ledger_constraints.sql",
-              "ToolTip": "D:\\TKCSDL\\database\\ledger_constraints.sql - localhost.OISM (DQUY\\L\u00EA \u0110\u00ECnh Qu\u00FD (81))",
-              "RelativeToolTip": "database\\ledger_constraints.sql - localhost.OISM (DQUY\\L\u00EA \u0110\u00ECnh Qu\u00FD (81))",
+              "DocumentIndex": 2,
+              "Title": "seed_data.sql - localhost.OISM (DQUY\\L\u00EA \u0110\u00ECnh Qu\u00FD (94))",
+              "DocumentMoniker": "D:\\TKCSDL\\database\\seed_data.sql",
+              "RelativeDocumentMoniker": "database\\seed_data.sql",
+              "ToolTip": "D:\\TKCSDL\\database\\seed_data.sql - localhost.OISM (DQUY\\L\u00EA \u0110\u00ECnh Qu\u00FD (94))",
+              "RelativeToolTip": "database\\seed_data.sql - localhost.OISM (DQUY\\L\u00EA \u0110\u00ECnh Qu\u00FD (94))",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000826|",
-              "WhenOpened": "2026-09-18T18:53:40.671Z",
-              "EditorCaption": " - localhost.OISM (DQUY\\L\u00EA \u0110\u00ECnh Qu\u00FD (81))"
+              "WhenOpened": "2026-09-19T05:38:57.897Z",
+              "EditorCaption": " - localhost.OISM (DQUY\\L\u00EA \u0110\u00ECnh Qu\u00FD (94))"
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "schema.sql - localhost.OISM (DQUY\\L\u00EA \u0110\u00ECnh Qu\u00FD (79))",
+              "Title": "integrity_check.sql - localhost.OISM (DQUY\\L\u00EA \u0110\u00ECnh Qu\u00FD (71))",
+              "DocumentMoniker": "D:\\TKCSDL\\database\\integrity_check.sql",
+              "RelativeDocumentMoniker": "database\\integrity_check.sql",
+              "ToolTip": "D:\\TKCSDL\\database\\integrity_check.sql - localhost.OISM (DQUY\\L\u00EA \u0110\u00ECnh Qu\u00FD (71))",
+              "RelativeToolTip": "database\\integrity_check.sql - localhost.OISM (DQUY\\L\u00EA \u0110\u00ECnh Qu\u00FD (71))",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000826|",
+              "WhenOpened": "2026-09-19T05:43:09.123Z",
+              "EditorCaption": " - localhost.OISM (DQUY\\L\u00EA \u0110\u00ECnh Qu\u00FD (71))"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "ledger_constraints.sql - localhost.OISM (DQUY\\L\u00EA \u0110\u00ECnh Qu\u00FD (78))",
+              "DocumentMoniker": "D:\\TKCSDL\\database\\ledger_constraints.sql",
+              "RelativeDocumentMoniker": "database\\ledger_constraints.sql",
+              "ToolTip": "D:\\TKCSDL\\database\\ledger_constraints.sql - localhost.OISM (DQUY\\L\u00EA \u0110\u00ECnh Qu\u00FD (78))",
+              "RelativeToolTip": "database\\ledger_constraints.sql - localhost.OISM (DQUY\\L\u00EA \u0110\u00ECnh Qu\u00FD (78))",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000826|",
+              "WhenOpened": "2026-09-18T18:53:40.671Z",
+              "EditorCaption": " - localhost.OISM (DQUY\\L\u00EA \u0110\u00ECnh Qu\u00FD (78))"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "schema.sql - localhost.OISM (DQUY\\L\u00EA \u0110\u00ECnh Qu\u00FD (57))",
               "DocumentMoniker": "D:\\TKCSDL\\database\\schema.sql",
               "RelativeDocumentMoniker": "database\\schema.sql",
-              "ToolTip": "D:\\TKCSDL\\database\\schema.sql - localhost.OISM (DQUY\\L\u00EA \u0110\u00ECnh Qu\u00FD (79))",
-              "RelativeToolTip": "database\\schema.sql - localhost.OISM (DQUY\\L\u00EA \u0110\u00ECnh Qu\u00FD (79))",
+              "ToolTip": "D:\\TKCSDL\\database\\schema.sql - localhost.OISM (DQUY\\L\u00EA \u0110\u00ECnh Qu\u00FD (57))",
+              "RelativeToolTip": "database\\schema.sql - localhost.OISM (DQUY\\L\u00EA \u0110\u00ECnh Qu\u00FD (57))",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000826|",
               "WhenOpened": "2026-09-18T18:42:53.876Z",
-              "EditorCaption": " - localhost.OISM (DQUY\\L\u00EA \u0110\u00ECnh Qu\u00FD (79))"
+              "EditorCaption": " - localhost.OISM (DQUY\\L\u00EA \u0110\u00ECnh Qu\u00FD (57))"
             }
           ]
         }
