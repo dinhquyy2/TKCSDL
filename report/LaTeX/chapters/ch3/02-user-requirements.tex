@@ -29,17 +29,31 @@
 
 \subsubsection{Diagram(s)}
 
-Toàn bộ actor và use case liên quan được tổng hợp trong một sơ đồ Use Case duy nhất, thể hiện quan hệ giữa 5 actor và các nhóm chức năng chính của hệ thống.
+Sơ đồ Use Case thể hiện quan hệ giữa 5 actor và các nhóm chức năng chính của hệ thống. Để dễ theo dõi, sơ đồ được chia thành hai phần trên và dưới.
 
-\begin{figure}[H]
+\begin{figure}[p]
     \centering
-    \fbox{\parbox{0.9\textwidth}{\centering\vspace{4cm}\textit{[Chèn hình tại đây]}\vspace{4cm}}}
+    \begin{subfigure}{0.96\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{images/use_case_top.png}
+        \caption{Phần trên}
+        \label{fig:usecase-diagram-a}
+    \end{subfigure}
     \caption{Sơ đồ Use Case tổng quát của hệ thống}
     \label{fig:usecase-diagram}
 \end{figure}
-\begin{imgnote}
-📌 Hình 2 — Cần bổ sung hình: \texttt{Hinh\_02\_UseCaseDiagram.png} — Use Case Diagram thể hiện các use case chính của Owner/Staff/Cashier và 2 actor hệ thống.
-\end{imgnote}
+
+\begin{figure}[p]
+    \ContinuedFloat
+    \centering
+    \setcounter{subfigure}{1}
+    \begin{subfigure}{0.96\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{images/use_case_bottom.png}
+        \caption{Phần dưới}
+        \label{fig:usecase-diagram-b}
+    \end{subfigure}
+\end{figure}
 
 \subsubsection{Descriptions}
 

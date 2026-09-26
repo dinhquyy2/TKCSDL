@@ -2,6 +2,7 @@
 \usepackage[a4paper,left=1.2cm,right=1.2cm,top=2cm,bottom=2cm]{geometry}
 \usepackage{fontspec}
 \usepackage{graphicx}
+\usepackage{subcaption}
 \usepackage{amssymb} % provides \checkmark
 \usepackage{tikz}
 \usetikzlibrary{shapes.geometric, arrows.meta, positioning}
@@ -18,6 +19,9 @@
 \usepackage[main=vietnamese,english]{babel}
 \usepackage{xcolor}
 \usepackage{listings}
+
+\renewcommand{\thesubfigure}{\thefigure\alph{subfigure}}
+\captionsetup[subfigure]{labelformat=simple}
 
 % SQL code listing style (used in Chapter 4 — Database-centric content)
 \definecolor{sqlkeyword}{RGB}{0,80,170}
